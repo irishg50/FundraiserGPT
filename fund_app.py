@@ -27,10 +27,12 @@ app = Flask(__name__)
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY")
 
 DATABASE_URL = os.environ.get('DATABASE_URL')
-if DATABASE_URL.startswith("postgres://"):
+if DATABASE_URL is None:
+    raise ValueError("DATABASE_URL environment variable is not set")
+elif DATABASE_URL.startswith("postgres://"):
     DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
-app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
 
+app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
 
 db = SQLAlchemy(app)
 
