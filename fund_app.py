@@ -5,7 +5,6 @@ Created on Thu Apr  6 16:41:32 2023
 @author: irish
 """
 
-#pip install Flask Flask_SQLAlchemy Flask_Login Flask_Bcrypt requests
 
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, make_response
 from flask_sqlalchemy import SQLAlchemy
@@ -164,12 +163,24 @@ def login():
         username = request.form["username"]
         password = request.form["password"]
 
+        # Log the received username and password
+        app.logger.info(f"Received username: {username}")
+        app.logger.info(f"Received password: {password}")
+
         user = User.query.filter_by(username=username).first()
+
+        # Log the result of the database query
+        if user:
+            app.logger.info(f"User found in database: {user.username}")
+        else:
+            app.logger.info("User not found in database")
 
         if user and bcrypt.check_password_hash(user.password, password):
             login_user(user)
             return redirect(url_for("index"))
 
+        # Log the result of the password check
+        app.logger.info("Invalid username or password")
         flash("Invalid username or password")
 
     return render_template("login.html")
