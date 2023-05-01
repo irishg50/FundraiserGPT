@@ -27,7 +27,10 @@ app = Flask(__name__)
 #app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY")
 #app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///C://Users//irish//GitHub//FundGPT_v3\instance/site.db"
 
+
 DATABASE_URL = os.environ.get('DATABASE_URL')
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
 
 
