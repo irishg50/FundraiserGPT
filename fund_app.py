@@ -10,6 +10,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash, jso
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, LoginManager, login_user, login_required, logout_user, current_user
 from flask_bcrypt import Bcrypt
+from flask_migrate import Migrate
 from dotenv import load_dotenv
 import os
 import requests
@@ -32,6 +33,8 @@ app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
 
 
 db = SQLAlchemy(app)
+
+migrate = Migrate(app, db)
 
 bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
