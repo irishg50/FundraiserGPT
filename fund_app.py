@@ -61,7 +61,7 @@ class User(db.Model, UserMixin):
 class ChatRequest(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
-    prompt = db.Column(db.String(200), nullable=False)
+    prompt = db.Column(db.Text, nullable=False)
     engine = db.Column(db.String(50), nullable=False)
     chatgpt_response = db.Column(db.Text, nullable=False)
     timestamp = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow)
