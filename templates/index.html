@@ -7,7 +7,9 @@
 <label for="model">Model:</label>
 <select name="model" id="model">
   <option value="gpt-3.5-turbo">ChatGPT 3.5</option>
+    {% if user_class > 4 %}
   <option value="gpt-4">GPT-4</option>
+    {% endif %}
 </select>
   </div>
     <div class="mb-3">

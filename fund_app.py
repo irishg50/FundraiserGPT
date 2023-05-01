@@ -56,6 +56,8 @@ class User(db.Model, UserMixin):
     org_name = db.Column(db.String(120), nullable=False) 
     password = db.Column(db.String(128), nullable=False)
     registered_on = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow)
+    user_status = db.Column(db.String(25), nullable=True)
+    user_class = db.Column(db.Integer, nullable=True)
 
     def __repr__(self):
         return f"<User {self.username}>"
@@ -151,7 +153,9 @@ def register():
             email=email,
             org_name=org_name,
             password=hashed_password,
-            registered_on=datetime.datetime.utcnow()
+            registered_on=datetime.datetime.utcnow(),
+            user_status="active",
+            user_class=3 
         )
         db.session.add(user)
         db.session.commit()
@@ -182,7 +186,7 @@ def login():
         else:
             app.logger.info("User not found in database")
 
-        if user and bcrypt.check_password_hash(user.password, password):
+        if user and bcrypt.check_password_hash(user.password, password) and user.user_status == "active":
             login_user(user)
             return redirect(url_for("index"))
 
@@ -279,7 +283,7 @@ def index():
             print("Exception:", e)
             return make_response(jsonify({"error": "Internal Server Error"}), 500)
 
-    return render_template("index.html", org_name=current_user.org_name)
+    return render_template("index.html", org_name=current_user.org_name, user_class=current_user.user_class)
 
 
 
