@@ -24,9 +24,7 @@ load_dotenv()
 OPENAI_KEY = os.environ.get("OPENAI_KEY")
 
 app = Flask(__name__)
-#app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY")
-#app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///C://Users//irish//GitHub//FundGPT_v3\instance/site.db"
-
+app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY")
 
 DATABASE_URL = os.environ.get('DATABASE_URL')
 if DATABASE_URL.startswith("postgres://"):
