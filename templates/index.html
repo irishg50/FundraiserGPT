@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+  <form id="chat-form" method="post" class="mb-3">
+    <div class="mb-3">
+<label for="model">Model:</label>
+<select name="model" id="model">
+  <option value="gpt-3.5-turbo">ChatGPT 3.5</option>
+  <option value="gpt-4">GPT-4</option>
+</select>
+  </div>
+    <div class="mb-3">
+      <label for="org_name" class="form-label">Organization Name:</label>
+      <input type="text" id="org_name" name="org_name" class="form-control" value="{{ org_name }}" readonly>
+    </div>
+<div class="mb-3">
+  <label for="urgency" class="form-label">Topic:</label>
+  <input type="text" id="topic" name="topic" class="form-control">
+</div>
+<div class="mb-3">
+  <label for="audience" class="form-label">Audience:</label>
+  <input type="text" id="audience" name="audience" class="form-control">
+</div>
+<div class="mb-3">
+  <label for="urgency" class="form-label">Urgency:</label>
+  <input type="text" id="urgency" name="urgency" class="form-control">
+</div>
+<div class="mb-3">
+  <label for="notes" class="form-label">Notes:</label>
+  <input type="text" id="notes" name="notes" class="form-control">
+</div>
+<div class="mb-3">
+  <label for="format" class="form-label">Format:</label>
+  <div class="form-check">
+    <input class="form-check-input" type="radio" name="format" id="formatEmail" value="Email">
+    <label class="form-check-label" for="formatEmail">Email</label>
+  </div>
+<div class="form-check">
+  <input class="form-check-input" type="radio" name="format" id="formatFacebookPost" value="Facebook">
+  <label class="form-check-label" for="formatFacebookPost">Facebook Post</label>
+</div>
+   <div class="form-check">
+     <input class="form-check-input" type="radio" name="format" id="formatTwitter" value="Twitter">
+     <label class="form-check-label" for="formatTwitter">Twitter Tweet</label>
+   </div>
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="format" id="formatDonationForm" value="DonationForm">
+      <label class="form-check-label" for="formatDonationForm">Donation webage copy</label>
+    </div>
+     <div class="form-check">
+       <input class="form-check-input" type="radio" name="format" id="formatLetter" value="Letter">
+       <label class="form-check-label" for="formatLetter">Written Letter</label>
+     </div>
+  <!-- Add more radio buttons for the other formats -->
+</div>
+    <!-- Add other input fields, such as engine, choice1, and check1 -->
+    <button type="submit" class="btn btn-primary" onclick="hideCopyButton()">Submit</button>
+   <button type="button" onclick="clearForm()">Reset Form</button>
+    <div id="loading-spinner" class="spinner-border text-primary" role="status" style="display:none;">
+   <span class="sr-only">.</span>
+</div>
+  </form>
+  <div id="response-display" class="mb-3">
+    <!-- The response will be displayed here -->
+  </div>
+  <button id="copy-button" onclick="copyToClipboard()" style="display: none;">Copy to Clipboard</button>
+</div>
+  </div>
+  <p> </p>
+</div>
+    <style>
+        #response-display pre {
+            background-color: #f8f8f8;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 1em;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+    </style>
+<script>
+    document.getElementById("chat-form").addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const model = document.getElementById("model").value;
+        const topic = document.getElementById("topic").value;
+        const audience = document.getElementById("audience").value;
+        const notes = document.getElementById("notes").value;
+        const urgency = document.getElementById("urgency").value;
+        const format = document.querySelector('input[name="format"]:checked').value;
+
+        const responseDisplay = document.getElementById("response-display");
+        const loadingSpinner = document.getElementById("loading-spinner");
+
+        const data = new FormData(event.target);
+        data.set("model", model);
+        data.set("topic", topic);
+        data.set("audience", audience);
+        data.set("notes", notes);
+        data.set("urgency", urgency);
+        data.set("format", format);
+    
+
+        // Show the spinner
+        loadingSpinner.style.display = "inline-block";
+
+        try {
+            const response = await fetch("/", {
+                method: "POST",
+                body: data,
+            });
+
+            // Hide the spinner
+            loadingSpinner.style.display = "none";
+
+            if (response.ok) {
+                const chatgptResponse = await response.json();
+                responseDisplay.innerHTML = `<pre>${chatgptResponse.response}</pre>`;
+                document.getElementById("copy-button").style.display = "inline";
+            } else {
+                responseDisplay.innerHTML = `<p>Error: ${response.statusText}</p>`;
+            }
+        } catch (error) {
+            // Hide the spinner
+            loadingSpinner.style.display = "none";
+            responseDisplay.innerHTML = `<p>Error: ${error.message}</p>`;
+        }
+  
+    });
+    
+    function copyToClipboard() {
+  // Get the element that contains the response text
+      var responseElement = document.getElementById("response-display");
+  
+  // Create a new textarea element and set its value to the response text
+      var textarea = document.createElement("textarea");
+      textarea.value = responseElement.textContent;
+  
+  // Append the textarea to the document (it will not be visible)
+      document.body.appendChild(textarea);
+  
+  // Select the content of the textarea
+      textarea.select();
+  
+  // Copy the selected content to the clipboard
+      document.execCommand("copy");
+  
+  // Remove the textarea from the document
+      document.body.removeChild(textarea);
+  
+  // Optionally, display a message to the user indicating that the text was copied
+      alert("Text copied to clipboard!");
+}
+
+function hideCopyButton() {
+  // Hide the 'Copy to Clipboard' button
+  document.getElementById("copy-button").style.display = "none";
+}
+
+function clearForm() {
+  // Get the form element
+  var form = document.getElementById("your-form-id");
+  
+  // Reset the form
+  form.reset();
+  
+  // Hide the 'Copy to Clipboard' button and clear the response display
+  document.getElementById("copy-button").style.display = "none";
+  document.getElementById("response-display").innerHTML = "";
+}
+
+</script>
+
+{% endblock %}
+

@@ -1,0 +1,11 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Apr  7 00:17:27 2023
+
+@author: irish
+"""
+
+
+
+
+pip install Flask-Login flask_bcrypt

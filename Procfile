@@ -1,0 +1,1 @@
+web: gunicorn fund_app:app

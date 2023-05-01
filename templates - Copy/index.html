@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <form id="chat-form" method="post">
+        <label for="prompt">Prompt:</label>
+        <input type="text" id="prompt" name="prompt" required>
+        <br>
+         <label for="topic">What is the main topic for the appeal?</label>
+        <input type="text" id="topic" name="topic" required>
+        <br>       
+        <label for="engine">Engine:</label>
+        <select id="engine" name="engine">
+            <option value="gpt-3.5-turbo">ChatGPT</option>
+            <option value="gpt-4">gpt-4</option>
+        </select>
+        <br>
+        <label for="choice1">Choice 1:</label>
+        <select id="choice1" name="choice1">
+            <option value="option1">Option 1</option>
+            <option value="option2">Option 2</option>
+        </select>
+        <br>
+        <label for="check1">Check 1:</label>
+        <input type="checkbox" id="check1" name="check1">
+        <br>
+        <button type="submit">Submit</button>
+    </form>
+    <div id="response-display">
+        <!-- The response will be displayed here -->
+    </div>
+    <style>
+        #response-display pre {
+            background-color: #f8f8f8;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 1em;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+    </style>
+   <script>
+    document.getElementById("chat-form").addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const prompt = document.getElementById("prompt").value;
+        const topic = document.getElementById("topic").value;
+        const engine = document.getElementById("engine").value;
+        const choice1 = document.getElementById("choice1").value;
+        const check1 = document.getElementById("check1").checked;
+
+        const responseDisplay = document.getElementById("response-display");
+
+        const data = new FormData(event.target);
+        data.set("prompt", prompt + ` Choice1: ${choice1}. Check1: ${check1}.`);
+
+        try {
+            const response = await fetch("/", {
+                method: "POST",
+                body: data,
+            });
+
+            if (response.ok) {
+                const chatgptResponse = await response.json();
+                responseDisplay.innerHTML = `<pre>${chatgptResponse.response}</pre>`;
+            } else {
+                responseDisplay.innerHTML = `<p>Error: ${response.statusText}</p>`;
+            }
+        } catch (error) {
+            responseDisplay.innerHTML = `<p>Error: ${error.message}</p>`;
+        }
+    });
+</script>
+
+{% endblock %}
+
