@@ -18,27 +18,32 @@
     </div>
 <div class="mb-3">
   <label for="urgency" class="form-label">Topic:</label>
-  <input type="text" id="topic" name="topic" class="form-control">
+   <p class="mb-0"><i>What is the primary topic for this fundraising campaign.</i></p>
+  <input type="text" id="topic" name="topic" class="form-control" maxlength="250">
 </div>
 <div class="mb-3">
   <label for="audience" class="form-label">Audience:</label>
-  <input type="text" id="audience" name="audience" class="form-control">
+   <p class="mb-0"><i>Identify the intended audience for this campaign. (max 250 char.)</i></p>
+  <input type="text" id="audience" name="audience" class="form-control" maxlength="250">
 </div>
 <div class="mb-3">
   <label for="urgency" class="form-label">Urgency:</label>
-  <input type="text" id="urgency" name="urgency" class="form-control">
+   <p class="mb-0"><i>What is the urgency for this campaign? (max 250 char.)</i></p>
+  <input type="text" id="urgency" name="urgency" class="form-control" maxlength="250">
 </div>
 <div class="mb-3">
     <label for="impact">Impact:</label>
+     <p class="mb-0"><i>Write a note up to 500 characters to explain the impact that donations can make.</i></p>
     <textarea id="impact" name="impact" class="form-control" maxlength="250" rows="3"></textarea>
 </div>
 <div class="mb-3">
   <label for="notes" class="form-label">Addtional Appeal Notes:</label>
-   <p class="mb-0">Write a note up to 500 characters to explain additional considerations this appeal.</p>
+   <p class="mb-0"><i>Write a note up to 1000 characters to explain additional considerations for this campaign.</i></p>
    <textarea id="notes" name="notes" class="form-control" maxlength="500" rows="4"></textarea>
  </div>
 <div class="mb-3">
-  <label for="format" class="form-label">Format:</label>
+  <label for="format" class="form-label">Output Format:</label> 
+   <p class="mb-0"><i>Select the output format for this request.</i></p>
   <div class="form-check">
     <input class="form-check-input" type="radio" name="format" id="formatEmail" value="Email">
     <label class="form-check-label" for="formatEmail">Email</label>
