@@ -54,6 +54,7 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     org_name = db.Column(db.String(120), nullable=False) 
+    fund_mission = db.Column(db.String(250), nullable=True)
     password = db.Column(db.String(128), nullable=False)
     registered_on = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow)
     user_status = db.Column(db.String(25), nullable=True)
@@ -130,6 +131,7 @@ def register():
         username = request.form["username"]
         email = request.form["email"]
         org_name = request.form["org_name"]
+        fund_mission = request.form["fund_mission"]  
         password = request.form["password"]
 
         # Generate a unique user_id
@@ -152,6 +154,7 @@ def register():
             username=username,
             email=email,
             org_name=org_name,
+            fund_mission=fund_mission,
             password=hashed_password,
             registered_on=datetime.datetime.utcnow(),
             user_status="active",
