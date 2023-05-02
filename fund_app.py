@@ -215,6 +215,7 @@ def index():
             audience = request.form["audience"]
             notes = request.form["notes"]
             urgency = request.form["urgency"]
+            impact = request.form["impact"]
             format = request.form["format"]
 
             # Sanitize the input fields
@@ -222,6 +223,7 @@ def index():
             audience = sanitize_input(audience)
             notes = sanitize_input(notes)
             urgency = sanitize_input(urgency)
+            impact = sanitize_input(impact)
             format = sanitize_input(format)
 
             # Concatenate the fields to create the final prompt
@@ -230,12 +232,15 @@ def index():
             #build the content prompt from the form input
             final_prompt = "You are a helpful fundraising copy writer, helping to prepare fundraising content for " + org_name + "."
             final_prompt += " The message should have an overall tone of " + "earnest and urgent" 
-            final_prompt += ", that is targeted to " + audience + "."
+            if audience :
+                final_prompt += ", and be targeted to " + audience
             final_prompt += ". The topic of the message should be " + topic 
-            final_prompt += ", with an urgency because of " + urgency 
-            final_prompt += ", and support the organisation's important work to " + "work" 
-            final_prompt += "."
-            final_prompt += ". Also the consider the following points when crafting the message: " + notes
+            if urgency :
+                final_prompt += " with an urgency because of " + urgency
+            if impact :
+                final_prompt += ". Donations will support the organisation's important work to " + impact 
+            if notes :
+                final_prompt += ". Also the consider the following points when crafting the message: " + notes
 
             # add format and fundraising guidelines
              
