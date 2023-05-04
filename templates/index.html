@@ -4,7 +4,7 @@
 <div class="container">
   <form id="chat-form" method="post" class="mb-3">
     <div class="mb-3">
-<label for="model">Model:</label>
+<label for="model">Select Model:</label>
 <select name="model" id="model" class="form-select">
   <option value="gpt-3.5-turbo">ChatGPT 3.5</option>
     {% if user_class > 4 %}
@@ -13,17 +13,15 @@
 </select>
   </div>
     <div class="mb-3">
-      <label for="org_name" class="form-label">Organization Name:</label>
-      <input type="text" id="org_name" name="org_name" class="form-control" value="{{ org_name }}" readonly>
+     <p class="mb-0"><b>ChatGPT, help me write a fundraising campaign for {{ org_name }}.</b></p>
+      <input type="hiddden" id="org_name" name="org_name" class="form-control" value="{{ org_name }}" readonly>
     </div>
 <div class="mb-3">
-  <label for="urgency" class="form-label">Topic:</label>
-   <p class="mb-0"><i>What is the primary topic for this fundraising campaign.</i></p>
+     <p class="mb-0"><i>What is the <b>primary topic</b> for this fundraising campaign.</i></p>
   <input type="text" id="topic" name="topic" class="form-control" maxlength="250">
 </div>
 <div class="mb-3">
-  <label for="audience" class="form-label">Audience:</label>
-   <p class="mb-0"><i>Identify the intended audience for this campaign. (max 250 char.)</i></p>
+   <p class="mb-0"><i>Who is the intended audience for this campaign? (max 250 char.)</i></p>
   <input type="text" id="audience" name="audience" class="form-control" maxlength="250">
 </div>
 <div class="mb-3">
@@ -33,7 +31,7 @@
 </div>
 <div class="mb-3">
     <label for="impact">Impact:</label>
-     <p class="mb-0"><i>Write a note up to 500 characters to explain the impact that donations can make.</i></p>
+     <p class="mb-0"><i>What should donors know about the impact their donation can make? (max 250 char.)</i></p>
     <textarea id="impact" name="impact" class="form-control" maxlength="250" rows="3"></textarea>
 </div>
 <div class="mb-3">
