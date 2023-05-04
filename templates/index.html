@@ -29,7 +29,7 @@
    <textarea id="notes" name="notes" class="form-control" maxlength="500" rows="4"></textarea>
  </div>
 <div class="mb-3">
-   <p class="mb-0"><i>Select the output format for this request.</i></p>
+   <p class="mb-0">Select the <b>output format.</b></p>
   <div class="form-check">
     <input class="form-check-input" type="radio" name="format" id="formatEmail" value="Email">
     <label class="form-check-label" for="formatEmail">Email</label>
@@ -52,7 +52,6 @@
      </div>
   <!-- Add more radio buttons for the other formats -->
  <div class="mb-3">
-<label for="model">GPT Model:</label>
 <select name="model" id="model" class="form-select">
   <option value="gpt-3.5-turbo">ChatGPT 3.5</option>
     {% if user_class > 4 %}
