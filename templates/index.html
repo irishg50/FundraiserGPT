@@ -3,18 +3,10 @@
 {% block content %}
 <div class="container">
   <form id="chat-form" method="post" class="mb-3">
-    <div class="mb-3">
-<label for="model">Select Model:</label>
-<select name="model" id="model" class="form-select">
-  <option value="gpt-3.5-turbo">ChatGPT 3.5</option>
-    {% if user_class > 4 %}
-  <option value="gpt-4">GPT-4</option>
-    {% endif %}
-</select>
-  </div>
+   
     <div class="mb-3">
      <p class="mb-0"><b>ChatGPT, help me write a fundraising campaign for {{ org_name }}.</b></p>
-      <input type="hiddden" id="org_name" name="org_name" class="form-control" value="{{ org_name }}" readonly>
+      <input type="hidden" id="org_name" name="org_name" class="form-control" value="{{ org_name }}" readonly>
     </div>
 <div class="mb-3">
      <p class="mb-0"><i>What is the <b>primary topic</b> for this fundraising campaign.</i></p>
@@ -25,22 +17,18 @@
   <input type="text" id="audience" name="audience" class="form-control" maxlength="250">
 </div>
 <div class="mb-3">
-  <label for="urgency" class="form-label">Urgency:</label>
-   <p class="mb-0"><i>What is the urgency for this campaign? (max 250 char.)</i></p>
+   <p class="mb-0"><i>What is the <b>urgency</b> for this campaign? (max 250 char.)</i></p>
   <input type="text" id="urgency" name="urgency" class="form-control" maxlength="250">
 </div>
 <div class="mb-3">
-    <label for="impact">Impact:</label>
-     <p class="mb-0"><i>What should donors know about the impact their donation can make? (max 250 char.)</i></p>
+     <p class="mb-0"><i>What should donors know about the <b>impact</b> their donation can make? (max 250 char.)</i></p>
     <textarea id="impact" name="impact" class="form-control" maxlength="250" rows="3"></textarea>
 </div>
 <div class="mb-3">
-  <label for="notes" class="form-label">Addtional Appeal Notes:</label>
-   <p class="mb-0"><i>Write a note up to 1000 characters to explain additional considerations for this campaign.</i></p>
+   <p class="mb-0"><i>Are there any <b>additional considerations</b> or specific details for this campaign? (max 1000 char.)</i></p>
    <textarea id="notes" name="notes" class="form-control" maxlength="500" rows="4"></textarea>
  </div>
 <div class="mb-3">
-  <label for="format" class="form-label">Output Format:</label> 
    <p class="mb-0"><i>Select the output format for this request.</i></p>
   <div class="form-check">
     <input class="form-check-input" type="radio" name="format" id="formatEmail" value="Email">
@@ -63,6 +51,15 @@
        <label class="form-check-label" for="formatLetter">Written Letter</label>
      </div>
   <!-- Add more radio buttons for the other formats -->
+ <div class="mb-3">
+<label for="model">GPT Model:</label>
+<select name="model" id="model" class="form-select">
+  <option value="gpt-3.5-turbo">ChatGPT 3.5</option>
+    {% if user_class > 4 %}
+  <option value="gpt-4">GPT-4</option>
+    {% endif %}
+</select>
+  </div>
 </div>
     <!-- Add other input fields, such as engine, choice1, and check1 -->
     <button type="submit" class="btn btn-primary" onclick="hideCopyButton()">Submit</button>
