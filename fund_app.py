@@ -121,6 +121,14 @@ def generate_unique_user_id():
         user_id = ''.join(random.choices(string.ascii_letters + string.digits, k=12))
     return user_id
 
+@app.route("/chat_history")
+@login_required
+def chat_history():
+    # Query the chat_request table to get all records
+    chat_requests = ChatRequest.query.all()
+    # Render the chat_history.html template and pass the chat_requests to it
+    return render_template("chat_history.html", chat_requests=chat_requests)
+
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
