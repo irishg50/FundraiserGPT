@@ -285,7 +285,7 @@ def index():
 
             response = send_request_to_chatgpt(final_prompt, model)  # Use the desired engine
             if response["success"]:
-                chat_request = ChatRequest(user_id=current_user.id, prompt=final_prompt, engine="gpt-3.5-turbo", chatgpt_response=response["response"], timestamp=datetime.datetime.utcnow())
+                chat_request = ChatRequest(user_id=current_user.id, prompt=final_prompt, engine="gpt-3.5-turbo", chatgpt_response=response["response"], topic=topic, timestamp=datetime.datetime.utcnow())
                 db.session.add(chat_request)
                 db.session.commit()
                 return jsonify(response)
