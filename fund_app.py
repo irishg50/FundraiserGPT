@@ -123,11 +123,12 @@ def generate_unique_user_id():
     return user_id
 
 
+
 @app.route("/chat_history")
 @login_required
 def chat_history():
     # Check if the current user's ID is greater than 6
-    if int(current_user.user_id) > 6:
+    if int(current_user.user_class) > 6:
         # If true, retrieve all records from the ChatRequest table
         chat_requests = ChatRequest.query.all()
     else:
