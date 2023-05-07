@@ -122,6 +122,11 @@ def generate_unique_user_id():
         user_id = ''.join(random.choices(string.ascii_letters + string.digits, k=12))
     return user_id
 
+@app.route("/response/<int:chat_request_id>")
+@login_required
+def response(chat_request_id):
+    chat_request = ChatRequest.query.get_or_404(chat_request_id)
+    return render_template("response.html", chat_request=chat_request)
 
 
 @app.route("/chat_history")
