@@ -6,7 +6,7 @@ Created on Thu Apr  6 16:41:32 2023
 """
 
 
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, make_response
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, make_response, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, LoginManager, login_user, login_required, logout_user, current_user
 from flask_bcrypt import Bcrypt
