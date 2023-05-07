@@ -3,8 +3,8 @@
 {% block content %}
 <div class="container">
   <h3>Response</h3>
-  <div id="response-display" class="mb-3">
-    <pre>{{ response }}</pre>
+  <div id="response-display" class="mb-3" style="white-space: pre-wrap; word-wrap: break-word;">
+     <pre>{{ response }}</pre>
   </div>
   <button id="copy-button" onclick="copyToClipboard()">Copy to Clipboard</button>
   <a href="{{ url_for('index') }}" class="btn btn-primary">Back</a>
