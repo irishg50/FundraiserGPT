@@ -122,13 +122,6 @@ def generate_unique_user_id():
         user_id = ''.join(random.choices(string.ascii_letters + string.digits, k=12))
     return user_id
 
-@app.route("/response/<int:chat_request_id>")
-@login_required
-def response(chat_request_id):
-    chat_request = ChatRequest.query.get_or_404(chat_request_id)
-    return render_template("response.html", chat_request=chat_request)
-
-
 @app.route("/chat_history")
 @login_required
 def chat_history():
@@ -300,8 +293,7 @@ def index():
                 chat_request = ChatRequest(user_id=current_user.id, prompt=final_prompt, engine="gpt-3.5-turbo", chatgpt_response=response["response"], topic=topic, timestamp=datetime.datetime.utcnow())
                 db.session.add(chat_request)
                 db.session.commit()
-#                return jsonify(response)
-                return redirect(url_for("response", chat_request_id=chat_request.id))
+                return jsonify(response)
             else:
                 print("Error from send_request_to_chatgpt:", response["error"])
                 return make_response(jsonify({"error": response["error"]}), 400)
