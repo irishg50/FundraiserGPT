@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Generated Content</h1>
+  <p>{{ chat_request.chatgpt_response }}</p>
+  <a href="{{ url_for('index') }}">Go back to the form</a>
+{% endblock %}
