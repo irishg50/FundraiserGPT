@@ -293,7 +293,7 @@ def index():
                 chat_request = ChatRequest(user_id=current_user.id, prompt=final_prompt, engine="gpt-3.5-turbo", chatgpt_response=response["response"], topic=topic, timestamp=datetime.datetime.utcnow())
                 db.session.add(chat_request)
                 db.session.commit()
-#                return jsonify(response)
+                session['chat_request'] = final_prompt
                 return redirect(url_for("response", chatgpt_response=response["response"]))
             else:
                 print("Error from send_request_to_chatgpt:", response["error"])
@@ -311,7 +311,27 @@ def index():
 @login_required
 def response():
     chatgpt_response = request.args.get("chatgpt_response")
-    return render_template("response.html", response=chatgpt_response)
+    chat_request = session.get('chat_request')  # Retrieve chat_request from session
+    return render_template("response.html", response=chatgpt_response, chat_request=chat_request)
+
+@app.route("/continue_conversation", methods=["POST"])
+@login_required
+def continue_conversation():
+    additional_input = request.form["additional_input"]
+    previous_chat_request = request.form["chat_request"]
+    combined_chat_request = previous_chat_request + " " + additional_input
+    model = "gpt-3.5-turbo"  # Use the desired engine
+    response = send_request_to_chatgpt(combined_chat_request, model)
+    if response["success"]:
+        chat_request = ChatRequest(user_id=current_user.id, prompt=combined_chat_request, engine=model, chatgpt_response=response["response"], timestamp=datetime.datetime.utcnow())
+        db.session.add(chat_request)
+        db.session.commit()
+        session['chat_request'] = combined_chat_request  # Update chat_request in session
+        return redirect(url_for("response", chatgpt_response=response["response"]))
+    else:
+        print("Error from send_request_to_chatgpt:", response["error"])
+        return make_response(jsonify({"error": response["error"]}), 400)
+
 
 
 if __name__ == "__main__":

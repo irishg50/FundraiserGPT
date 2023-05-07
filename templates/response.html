@@ -3,11 +3,24 @@
 {% block content %}
 <div class="container">
   <h3>Response</h3>
- <div id="response-display" class="mb-3" style="white-space: pre-wrap; word-wrap: break-word;">
-    {{ response }}
+  <div id="response-display" class="mb-3">
+    <pre>{{ response }}</pre>
   </div>
   <button id="copy-button" onclick="copyToClipboard()">Copy to Clipboard</button>
   <a href="{{ url_for('index') }}" class="btn btn-primary">Back</a>
+
+  <!-- Form to continue the conversation -->
+  <h3>Continue Conversation</h3>
+  <form action="{{ url_for('continue_conversation') }}" method="POST">
+    <div class="form-group">
+      <label for="additional_input">Additional Input:</label>
+      <textarea class="form-control" id="additional_input" name="additional_input" rows="3"></textarea>
+    </div>
+    <input type="hidden" name="chat_request" value="{{ chat_request }}">  <!-- Hidden input field to store previous chat request -->
+    <button type="submit" class="btn btn-primary">Submit</button>
+    <button type="button" onclick="clearForm()">Reset Form</button>
+    <div id="loading-spinner" class="spinner-border text-primary" role="status" style="display:none;">
+  </form>
 </div>
 
 <script>
@@ -29,6 +42,20 @@ window.addEventListener('DOMContentLoaded', (event) => {
     spinner.style.display = "none";
   }
 });
+
+function showSpinner() {
+  // Show the spinner
+  document.getElementById("loading-spinner").style.display = "inline-block";
+}
+
+function clearForm() {
+  // Get the form element
+  var form = document.getElementById("chat-form");
+  
+  // Reset the form
+  form.reset();
+}
+
 </script>
 
 {% endblock %}
