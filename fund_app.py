@@ -293,7 +293,8 @@ def index():
                 chat_request = ChatRequest(user_id=current_user.id, prompt=final_prompt, engine="gpt-3.5-turbo", chatgpt_response=response["response"], topic=topic, timestamp=datetime.datetime.utcnow())
                 db.session.add(chat_request)
                 db.session.commit()
-                return jsonify(response)
+#                return jsonify(response)
+                return redirect(url_for("response", chatgpt_response=response["response"]))
             else:
                 print("Error from send_request_to_chatgpt:", response["error"])
                 return make_response(jsonify({"error": response["error"]}), 400)
@@ -306,6 +307,11 @@ def index():
 
     return render_template("index.html", org_name=current_user.org_name, user_class=current_user.user_class)
 
+@app.route("/response")
+@login_required
+def response():
+    chatgpt_response = request.args.get("chatgpt_response")
+    return render_template("response.html", response=chatgpt_response)
 
 
 if __name__ == "__main__":

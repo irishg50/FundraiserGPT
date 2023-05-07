@@ -1,120 +1,34 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h1>Generated Content</h1>
-  <p>{{ chat_request.chatgpt_response }}</p>
-  <a href="{{ url_for('index') }}">Go back to the form</a>
-  
-    <div id="response-display" class="mb-3">
-      <!-- The response will be displayed here -->
-    </div>
-    <button id="copy-button" onclick="copyToClipboard()" style="display: none;">Copy to Clipboard</button>
+<div class="container">
+  <h3>Response</h3>
+  <div id="response-display" class="mb-3">
+    <pre>{{ response }}</pre>
   </div>
-    </div>
-    <p> </p>
-  </div>
-      <style>
-          #response-display pre {
-              background-color: #f8f8f8;
-              border: 1px solid #ccc;
-              border-radius: 4px;
-              padding: 1em;
-              white-space: pre-wrap;
-              word-wrap: break-word;
-          }
-      </style>
-  <script>
-      document.getElementById("chat-form").addEventListener("submit", async (event) => {
-          event.preventDefault();
+  <button id="copy-button" onclick="copyToClipboard()">Copy to Clipboard</button>
+  <a href="{{ url_for('index') }}" class="btn btn-primary">Back</a>
+</div>
 
-          const model = document.getElementById("model").value;
-          const topic = document.getElementById("topic").value;
-          const audience = document.getElementById("audience").value;
-          const notes = document.getElementById("notes").value;
-          const urgency = document.getElementById("urgency").value;
-          const format = document.querySelector('input[name="format"]:checked').value;
+<script>
+function copyToClipboard() {
+  var responseElement = document.getElementById("response-display");
+  var textarea = document.createElement("textarea");
+  textarea.value = responseElement.textContent;
+  document.body.appendChild(textarea);
+  textarea.select();
+  document.execCommand("copy");
+  document.body.removeChild(textarea);
+  alert("Text copied to clipboard!");
+}
 
-          const responseDisplay = document.getElementById("response-display");
-          const loadingSpinner = document.getElementById("loading-spinner");
-
-          const data = new FormData(event.target);
-          data.set("model", model);
-          data.set("topic", topic);
-          data.set("audience", audience);
-          data.set("notes", notes);
-          data.set("urgency", urgency);
-          data.set("format", format);
-      
-
-          // Show the spinner
-          loadingSpinner.style.display = "inline-block";
-
-          try {
-              const response = await fetch("/", {
-                  method: "POST",
-                  body: data,
-              });
-
-              // Hide the spinner
-              loadingSpinner.style.display = "none";
-
-              if (response.ok) {
-                  const chatgptResponse = await response.json();
-                  responseDisplay.innerHTML = `<pre>${chatgptResponse.response}</pre>`;
-                  document.getElementById("copy-button").style.display = "inline";
-              } else {
-                  responseDisplay.innerHTML = `<p>Error: ${response.statusText}</p>`;
-              }
-          } catch (error) {
-              // Hide the spinner
-              loadingSpinner.style.display = "none";
-              responseDisplay.innerHTML = `<p>Error: ${error.message}</p>`;
-          }
-    
-      });
-      
-      function copyToClipboard() {
-    // Get the element that contains the response text
-        var responseElement = document.getElementById("response-display");
-    
-    // Create a new textarea element and set its value to the response text
-        var textarea = document.createElement("textarea");
-        textarea.value = responseElement.textContent;
-    
-    // Append the textarea to the document (it will not be visible)
-        document.body.appendChild(textarea);
-    
-    // Select the content of the textarea
-        textarea.select();
-    
-    // Copy the selected content to the clipboard
-        document.execCommand("copy");
-    
-    // Remove the textarea from the document
-        document.body.removeChild(textarea);
-    
-    // Optionally, display a message to the user indicating that the text was copied
-        alert("Text copied to clipboard!");
+// Hide the spinner when the response page is loaded
+window.addEventListener('DOMContentLoaded', (event) => {
+  var spinner = document.getElementById("loading-spinner");
+  if (spinner) {
+    spinner.style.display = "none";
   }
+});
+</script>
 
-  function hideCopyButton() {
-    // Hide the 'Copy to Clipboard' button
-    document.getElementById("copy-button").style.display = "none";
-  }
-
-  function clearForm() {
-    // Get the form element
-    var form = document.getElementById("your-form-id");
-    
-    // Reset the form
-    form.reset();
-    
-    // Hide the 'Copy to Clipboard' button and clear the response display
-    document.getElementById("copy-button").style.display = "none";
-    document.getElementById("response-display").innerHTML = "";
-  }
-
-  </script>
-  
-  
 {% endblock %}
