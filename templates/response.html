@@ -7,18 +7,18 @@
     {{ response }}
   </div>
   <button id="copy-button" onclick="copyToClipboard()">Copy to Clipboard</button>
-  <a href="{{ url_for('index') }}" class="btn btn-primary">Back</a>
-
+  <a href="{{ url_for('index') }}">Back</a>
+</div>
+<div class="container">
   <!-- Form to continue the conversation -->
-  <h3>Continue Conversation</h3>
+   <p>Regenerate this response, including these additional requests or adjustments</p>
   <form action="{{ url_for('continue_conversation') }}" method="POST" onsubmit="showSpinner()">
     <div class="form-group">
       <label for="additional_input">Additional Input:</label>
       <textarea class="form-control" id="additional_input" name="additional_input" rows="3"></textarea>
     </div>
     <input type="hidden" name="chat_request" value="{{ chat_request }}">  <!-- Hidden input field to store previous chat request -->
-    <button type="submit" class="btn btn-primary">Submit</button>
-    <button type="button" onclick="clearForm()">Reset Form</button>
+    <button type="submit" class="btn btn-primary">Regenerate</button>
     <div id="loading-spinner" class="spinner-border text-primary" role="status" style="display:none;">
   </form>
 </div>

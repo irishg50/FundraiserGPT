@@ -319,7 +319,7 @@ def response():
 def continue_conversation():
     additional_input = request.form["additional_input"]
     previous_chat_request = request.form["chat_request"]
-    combined_chat_request = previous_chat_request + " " + additional_input
+    combined_chat_request = previous_chat_request + " In addition, apply the following: " + additional_input
     model = "gpt-3.5-turbo"  # Use the desired engine
     response = send_request_to_chatgpt(combined_chat_request, model)
     if response["success"]:
