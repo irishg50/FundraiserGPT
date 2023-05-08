@@ -309,13 +309,6 @@ def index():
 
     return render_template("index.html", org_name=current_user.org_name, user_class=current_user.user_class)
 
-@app.route("/response")
-@login_required
-def response():
-    chatgpt_response = request.args.get("chatgpt_response")
-    chat_request = session.get('chat_request')  # Retrieve chat_request from session
-    return render_template("response.html", response=chatgpt_response, chat_request=chat_request)
-
 @app.route("/continue_conversation", methods=["POST"])
 @login_required
 def continue_conversation():
