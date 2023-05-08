@@ -138,7 +138,9 @@ def chat_history():
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if current_user.is_authenticated:
-        return redirect(url_for("index"))
+        if int(current_user.user_class) < 7:
+            return redirect(url_for("index"))
+
 
     if request.method == "POST":
         username = request.form["username"]
