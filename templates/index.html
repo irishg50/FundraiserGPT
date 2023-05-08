@@ -51,10 +51,12 @@
 </div>
 <!-- Add more radio buttons for the other formats -->
 <div class="mb-3">
+{% if user_class > 4 %}
 <select name="model" id="model" class="form-select">
 <option value="gpt-3.5-turbo">ChatGPT 3.5</option>
-{% if user_class > 4 %}
 <option value="gpt-4">GPT-4</option>
+{% else %}
+<input type="hidden" name="model" id="model" value="gpt-3.5-turbo">
 {% endif %}
 </select>
 </div>
