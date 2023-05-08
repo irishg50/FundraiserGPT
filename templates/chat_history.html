@@ -8,7 +8,7 @@
         <tr>
           <th>User ID</th>
           <th>Timestamp</th>
-          <th>Response</th>
+          <th>Topic</th>
         </tr>
       </thead>
       <tbody>
@@ -16,7 +16,7 @@
           <tr>
             <td>{{ chat_request.user_id }}</td>
             <td>{{ chat_request.timestamp }}</td>
-            <td>{{ chat_request.topic }}</td>
+            <td><a href="{{ url_for('reload_response', chat_request_id=chat_request.id) }}">{{ chat_request.topic }}</a></td>
           </tr>
         {% endfor %}
       </tbody>

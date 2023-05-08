@@ -332,6 +332,17 @@ def continue_conversation():
         print("Error from send_request_to_chatgpt:", response["error"])
         return make_response(jsonify({"error": response["error"]}), 400)
 
+@app.route("/reload_response/<int:chat_request_id>")
+@login_required
+def reload_response(chat_request_id):
+    # Retrieve the ChatRequest record based on the provided id
+    chat_request = ChatRequest.query.get(chat_request_id)
+    if chat_request:
+        # Redirect to the response route with the necessary parameters
+        return redirect(url_for("response", chatgpt_response=chat_request.chatgpt_response, chat_request=chat_request.prompt))
+    else:
+        flash("Chat request not found.")
+        return redirect(url_for("chat_history"))
 
 
 if __name__ == "__main__":
