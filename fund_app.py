@@ -289,14 +289,20 @@ def index():
 
 
             response = send_request_to_chatgpt(final_prompt, model)  # Use the desired engine
+
             if response["success"]:
-                chat_request = ChatRequest(user_id=current_user.id, prompt=final_prompt, engine="gpt-3.5-turbo", chatgpt_response=response["response"], topic=topic, timestamp=datetime.datetime.utcnow())
-                db.session.add(chat_request)
-                db.session.commit()
-                session['chat_request'] = final_prompt
-                session['topic'] = topic
-                session['model'] = model
-                return redirect(url_for("response", chatgpt_response=response["response"]))
+                    chat_request = ChatRequest(user_id=current_user.id, prompt=final_prompt, engine="gpt-3.5-turbo", chatgpt_response=response["response"], topic=topic, timestamp=datetime.datetime.utcnow())
+                    db.session.add(chat_request)
+                    db.session.commit()
+
+            # Store variables in session
+                    session['chat_request'] = final_prompt
+                    session['topic'] = topic
+                    session['model'] = model
+                    session['chatgpt_response'] = response["response"]
+
+                    return redirect(url_for("response"))
+    
             else:
                 print("Error from send_request_to_chatgpt:", response["error"])
                 return make_response(jsonify({"error": response["error"]}), 400)
