@@ -16,7 +16,10 @@
     <div class="form-group">
       <textarea class="form-control" id="additional_input" name="additional_input" rows="3"></textarea>
     </div>
-    <input type="hidden" name="chat_request" value="{{ chat_request }}">  <!-- Hidden input field to store previous chat request -->
+    <input type="hidden" name="chat_request" value="{{ chat_request }}">
+    <input type="hidden" name="topic" value="{{ topic }}">
+    <input type="hidden" name="model" value="{{ engine }}">
+         <!-- Hidden input field to store previous chat request -->
     <button type="submit" class="btn btn-primary">Regenerate</button>
     <div id="loading-spinner" class="spinner-border text-primary" role="status" style="display:none;">
   </form>

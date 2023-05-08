@@ -319,11 +319,13 @@ def response():
 def continue_conversation():
     additional_input = request.form["additional_input"]
     previous_chat_request = request.form["chat_request"]
+    topic = request.form["topic"]
+    model = request.form["model"]
     combined_chat_request = previous_chat_request + " In addition, apply the following: " + additional_input
     model = "gpt-3.5-turbo"  # Use the desired engine
     response = send_request_to_chatgpt(combined_chat_request, model)
     if response["success"]:
-        chat_request = ChatRequest(user_id=current_user.id, prompt=combined_chat_request, engine=model, chatgpt_response=response["response"], timestamp=datetime.datetime.utcnow())
+        chat_request = ChatRequest(user_id=current_user.id, prompt=combined_chat_request, engine=model, chatgpt_response=response["response"], topic=topic, timestamp=datetime.datetime.utcnow())
         db.session.add(chat_request)
         db.session.commit()
         session['chat_request'] = combined_chat_request  # Update chat_request in session
