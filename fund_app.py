@@ -294,6 +294,8 @@ def index():
                 db.session.add(chat_request)
                 db.session.commit()
                 session['chat_request'] = final_prompt
+                session['topic'] = topic
+                session['model'] = model
                 return redirect(url_for("response", chatgpt_response=response["response"]))
             else:
                 print("Error from send_request_to_chatgpt:", response["error"])
@@ -340,11 +342,25 @@ def reload_response(chat_request_id):
     # Retrieve the ChatRequest record based on the provided id
     chat_request = ChatRequest.query.get(chat_request_id)
     if chat_request:
-        # Redirect to the response route with the necessary parameters
-        return redirect(url_for("response", chatgpt_response=chat_request.chatgpt_response, chat_request=chat_request.prompt, topic=chat_request.topic, model=chat_request.engine))
+        # Store the necessary parameters in the session
+        session['chat_request'] = chat_request.prompt
+        session['chatgpt_response'] = chat_request.chatgpt_response
+        session['topic'] = chat_request.topic
+        session['model'] = chat_request.engine
+        # Redirect to the response route
+        return redirect(url_for("response"))
     else:
         flash("Chat request not found.")
         return redirect(url_for("chat_history"))
+
+@app.route("/response")
+@login_required
+def response():
+    chatgpt_response = session.get('chatgpt_response')
+    chat_request = session.get('chat_request')
+    topic = session.get('topic')
+    model = session.get('model')
+    return render_template("response.html", response=chatgpt_response, chat_request=chat_request, topic=topic, model=model)
 
 
 if __name__ == "__main__":
