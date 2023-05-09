@@ -5,19 +5,20 @@ Created on Thu Apr  6 16:41:32 2023
 @author: irish
 """
 
-
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, make_response, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, LoginManager, login_user, login_required, logout_user, current_user
 from flask_bcrypt import Bcrypt
 from flask_migrate import Migrate
 from dotenv import load_dotenv
+from celery import Celery
 import os
 import requests
 from requests.exceptions import Timeout
 import datetime
 import random
 import string
+
 
 load_dotenv()
 
@@ -28,7 +29,6 @@ app = Flask(__name__)
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY")
 
 DATABASE_URL = os.environ.get('DATABASE_URL')
-#DATABASE_URL = "postgresql://postgres:POST50pat!@localhost:5432/fund_app_db"
 
 if DATABASE_URL is None:
     raise ValueError("DATABASE_URL environment variable is not set")
@@ -36,7 +36,12 @@ elif DATABASE_URL.startswith("postgres://"):
     DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
 app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
-    
+
+app.config.update(
+    CELERY_BROKER_URL='redis://localhost:6379',
+    CELERY_RESULT_BACKEND='redis://localhost:6379'
+)
+
 db = SQLAlchemy(app)
 
 migrate = Migrate(app, db)
@@ -44,6 +49,24 @@ migrate = Migrate(app, db)
 bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
 login_manager.login_view = "login"
+
+def make_celery(app):
+    celery = Celery(
+        app.import_name,
+        backend=app.config['CELERY_RESULT_BACKEND'],
+        broker=app.config['CELERY_BROKER_URL']
+    )
+    celery.conf.update(app.config)
+
+    class ContextTask(celery.Task):
+        def __call__(self, *args, **kwargs):
+            with app.app_context():
+                return self.run(*args, **kwargs)
+
+    celery.Task = ContextTask
+    return celery
+
+celery = make_celery(app)
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -76,11 +99,10 @@ class ChatRequest(db.Model):
     def __repr__(self):
         return f"<ChatRequest {self.prompt}>"
 
-
-
 def sanitize_input(text):
     return text.strip().replace("'", "")
 
+@celery.task()
 def send_request_to_chatgpt(prompt, engine):
     if not prompt or not engine:
         raise ValueError("Prompt and engine fields are required.")
@@ -182,7 +204,6 @@ def register():
         return redirect(url_for("login"))
 
     return render_template("register.html")
-
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -290,29 +311,14 @@ def index():
             #select the model
             model = request.form["model"]
 
+            # Use the Celery task
+            task = send_request_to_chatgpt.delay(final_prompt, model)
 
-            try:
-                response = send_request_to_chatgpt(final_prompt, model)  # Use the desired engine
-            except Timeout:
-                flash("The request to the ChatGPT service timed out. Please try again.")
-                return redirect(url_for("index"))
+            # Store the task id in the session
+            session['task_id'] = task.id
 
-            if response["success"]:
-                    chat_request = ChatRequest(user_id=current_user.id, prompt=final_prompt, engine="gpt-3.5-turbo", chatgpt_response=response["response"], topic=topic, timestamp=datetime.datetime.utcnow())
-                    db.session.add(chat_request)
-                    db.session.commit()
+            return redirect(url_for('taskstatus'))
 
-            # Store variables in session
-                    session['chat_request'] = final_prompt
-                    session['topic'] = topic
-                    session['model'] = model
-                    session['chatgpt_response'] = response["response"]
-
-                    return redirect(url_for("response"))
-    
-            else:
-                print("Error from send_request_to_chatgpt:", response["error"])
-                return make_response(jsonify({"error": response["error"]}), 400)
         except ValueError as ve:
             print("ValueError:", ve)
             return make_response(jsonify({"error": str(ve)}), 400)
@@ -321,6 +327,34 @@ def index():
             return make_response(jsonify({"error": "Internal Server Error"}), 500)
 
     return render_template("index.html", org_name=current_user.org_name, user_class=current_user.user_class)
+
+@app.route('/status')
+def taskstatus():
+    task_id = session.get('task_id')
+    if task_id is None:
+        return redirect(url_for('index'))
+
+    task = send_request_to_chatgpt.AsyncResult(task_id)
+    if task.state == 'PENDING':
+        response = {
+            'state': task.state,
+            'status': 'Pending...'
+        }
+    elif task.state != 'FAILURE':
+        response = {
+            'state': task.state,
+            'status': str(task.info),  # this is the exception raised
+        }
+        if 'result' in task.info:
+            response['result'] = task.info['result']
+    else:
+        # something went wrong in the background job
+        response = {
+            'state': task.state,
+            'status': str(task.info),  # this is the exception raised
+        }
+    return jsonify(response)
+
 
 @app.route("/continue_conversation", methods=["POST"])
 @login_required
@@ -377,3 +411,4 @@ def response():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
