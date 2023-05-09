@@ -12,12 +12,14 @@ from flask_bcrypt import Bcrypt
 from flask_migrate import Migrate
 from dotenv import load_dotenv
 from celery import Celery
+from urllib.parse import urlparse
 import os
 import requests
 from requests.exceptions import Timeout
 import datetime
 import random
 import string
+
 
 
 load_dotenv()
@@ -37,10 +39,11 @@ elif DATABASE_URL.startswith("postgres://"):
 
 app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
 
-app.config.update(
-    CELERY_BROKER_URL='redis://localhost:6379',
-    CELERY_RESULT_BACKEND='redis://localhost:6379'
-)
+app.config['CELERY_BROKER_URL'] = os.environ.get('REDIS_URL', 'redis://localhost:6379')
+app.config['CELERY_RESULT_BACKEND'] = os.environ.get('REDIS_URL', 'redis://localhost:6379')
+
+celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
+celery.conf.update(app.config)
 
 db = SQLAlchemy(app)
 
@@ -49,6 +52,8 @@ migrate = Migrate(app, db)
 bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
 login_manager.login_view = "login"
+
+redis_url = urlparse(os.environ.get("REDIS_URL"))
 
 def make_celery(app):
     celery = Celery(
