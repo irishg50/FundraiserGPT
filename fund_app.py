@@ -98,7 +98,7 @@ def send_request_to_chatgpt(prompt, engine):
         "messages": [{"role": "system", "content": "You are a helpful assistant."}, {"role": "user", "content": prompt}],
         "model": engine,
         "temperature": 0.5,
-        "max_tokens": 3900,
+        "max_tokens": 3500,
     }
 
     print("Headers:", headers)
