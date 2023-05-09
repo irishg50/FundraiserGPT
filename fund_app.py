@@ -14,6 +14,7 @@ from flask_migrate import Migrate
 from dotenv import load_dotenv
 import os
 import requests
+from requests.exceptions import Timeout
 import datetime
 import random
 import string
@@ -290,7 +291,11 @@ def index():
             model = request.form["model"]
 
 
-            response = send_request_to_chatgpt(final_prompt, model)  # Use the desired engine
+            try:
+                response = send_request_to_chatgpt(final_prompt, model)  # Use the desired engine
+            except Timeout:
+                flash("The request to the ChatGPT service timed out. Please try again.")
+                return redirect(url_for("index"))
 
             if response["success"]:
                     chat_request = ChatRequest(user_id=current_user.id, prompt=final_prompt, engine="gpt-3.5-turbo", chatgpt_response=response["response"], topic=topic, timestamp=datetime.datetime.utcnow())
@@ -326,7 +331,13 @@ def continue_conversation():
     model = request.form["model"]
     combined_chat_request = previous_chat_request + " In addition, apply the following: " + additional_input
     model = "gpt-3.5-turbo"  # Use the desired engine
-    response = send_request_to_chatgpt(combined_chat_request, model)
+
+    try:
+        response = send_request_to_chatgpt(combined_chat_request, model)
+    except Timeout:
+        flash("The request to the ChatGPT service timed out. Please try again.")
+        return redirect(url_for("response"))    
+
     if response["success"]:
         chat_request = ChatRequest(user_id=current_user.id, prompt=combined_chat_request, engine=model, chatgpt_response=response["response"], topic=topic, timestamp=datetime.datetime.utcnow())
         db.session.add(chat_request)
