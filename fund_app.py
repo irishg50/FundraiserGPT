@@ -379,7 +379,14 @@ def response():
 @login_required
 def admin():
     if current_user.user_class > 6:
-        return render_template("admin.html")
+        users = db.session.query(
+            User,
+            db.func.count(ChatRequest.id).label('chat_request_count')
+        ).outerjoin(
+            ChatRequest, User.id == ChatRequest.user_id
+        ).group_by(User.id).all()
+
+        return render_template("admin.html", users=users)
     else:
         flash("You do not have permission to access this page.")
         return redirect(url_for("index"))

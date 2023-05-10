@@ -4,7 +4,7 @@
   <div class="container">
     <div class="row justify-content-center">
       <div class="col-md-6">
-        <h2 class="text-center">Login</h2>
+        <h2 class="text-center">Admin</h2>
         
         <!-- Display flashed messages -->
         {% with messages = get_flashed_messages() %}
@@ -14,7 +14,21 @@
             </div>
           {% endif %}
         {% endwith %}
-        
+
+    <table>
+    <tr>
+        <th>Username</th>
+        <th>Last Login</th>
+        <th>Chat Request Count</th>
+    </tr>
+    {% for user, chat_request_count in users %}
+    <tr>
+        <td>{{ user.username }}</td>
+        <td>{{ user.last_login.strftime('%Y-%m-%d %H:%M:%S') if user.last_login else 'Never' }}</td>
+        <td>{{ chat_request_count }}</td>
+    </tr>
+    {% endfor %}
+    </table>  
 
       </div>
     </div>
