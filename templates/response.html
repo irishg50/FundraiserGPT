@@ -26,6 +26,27 @@
 
 
 <script>
+
+// Assume `task_id` is the ID of the task
+var task_id = session['task_id'];
+
+var checkTaskStatus = function() {
+    fetch('/status')
+        .then(response => response.json())
+        .then(data => {
+            if (data.state == 'PENDING') {
+                // If task is still pending, wait a bit and then check again
+                setTimeout(checkTaskStatus, 1000);
+            } else if (data.state == 'SUCCESS') {
+                // If task is complete, update the response display
+                document.getElementById('response-display').textContent = data.result;
+            }
+        });
+};
+
+// Start checking the task status
+checkTaskStatus();
+
 function copyToClipboard() {
   var responseElement = document.getElementById("response-display");
   var textarea = document.createElement("textarea");
@@ -61,4 +82,6 @@ function clearForm() {
 </script>
 
 {% endblock %}
+
+
 
