@@ -384,7 +384,7 @@ def admin():
             db.func.count(ChatRequest.id).label('chat_request_count')
         ).outerjoin(
             ChatRequest, User.id == ChatRequest.user_id
-        ).group_by(User.id).all()
+        ).group_by(User.id).order_by(User.last_login.desc()).all()
 
         return render_template("admin.html", users=users)
     else:
