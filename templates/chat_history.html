@@ -6,7 +6,7 @@
     <table class="table table-striped">
       <thead>
         <tr>
-          <th>User ID</th>
+          <th>User</th>
           <th>Timestamp</th>
           <th>Topic</th>
         </tr>
@@ -14,7 +14,7 @@
       <tbody>
         {% for chat_request in chat_requests %}
           <tr>
-            <td>{{ chat_request.user_id }}</td>
+            <td>{{ chat_request.user.username }}</td>
             <td>{{ chat_request.timestamp.strftime('%Y-%m-%d %H:%M') }}</td>
             <td><a href="{{ url_for('reload_response', chat_request_id=chat_request.id) }}">{{ chat_request.topic }}</a></td>
           </tr>
