@@ -67,6 +67,7 @@ class User(db.Model, UserMixin):
 class ChatRequest(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    user = db.relationship('User', backref='chat_requests') 
     prompt = db.Column(db.Text, nullable=False)
     topic = db.Column(db.String(250), nullable=True)
     engine = db.Column(db.String(50), nullable=False)
