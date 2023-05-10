@@ -102,9 +102,6 @@ def send_request_to_chatgpt(prompt, engine):
         "max_tokens": 3500,
     }
 
-    print("Headers:", headers)
-    print("Data:", data)
-
     response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=data)
 
     if response.status_code == 200:
@@ -129,10 +126,10 @@ def chat_history():
     # Check if the current user's ID is greater than 6
     if int(current_user.user_class) > 6:
         # If true, retrieve all records from the ChatRequest table
-        chat_requests = ChatRequest.query.all()
+        chat_requests = ChatRequest.query.order_by(ChatRequest.timestamp.desc()).all()
     else:
         # Otherwise, retrieve only the records that match the current user's ID
-        chat_requests = ChatRequest.query.filter_by(user_id=current_user.id).all()
+        chat_requests = ChatRequest.query.filter_by(user_id=current_user.id).order_by(ChatRequest.timestamp.desc()).all()
     # Render the 'chat_history.html' template and pass the 'chat_requests' variable to it
     return render_template("chat_history.html", chat_requests=chat_requests)
 
