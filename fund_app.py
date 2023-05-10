@@ -60,6 +60,7 @@ class User(db.Model, UserMixin):
     registered_on = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow)
     user_status = db.Column(db.String(25), nullable=True)
     user_class = db.Column(db.Integer, nullable=True)
+    last_login = db.Column(db.DateTime, nullable=True)
 
     def __repr__(self):
         return f"<User {self.username}>"
@@ -204,6 +205,8 @@ def login():
             app.logger.info("User not found in database")
 
         if user and bcrypt.check_password_hash(user.password, password) and user.user_status == "active":
+            user.last_login = datetime.datetime.utcnow()  # update last_login
+            db.session.commit()
             login_user(user)
             return redirect(url_for("index"))
 
