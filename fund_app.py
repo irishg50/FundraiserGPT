@@ -375,6 +375,16 @@ def response():
     model = session.get('model')
     return render_template("response.html", response=chatgpt_response, chat_request=chat_request, topic=topic, model=model)
 
+@app.route("/admin")
+@login_required
+def admin():
+    if current_user.user_class > 6:
+        return render_template("admin.html")
+    else:
+        flash("You do not have permission to access this page.")
+        return redirect(url_for("index"))
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -92,8 +92,11 @@
             </li>
             {% if current_user.user_class > 7 %}
             <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('register') }}">Register</a>
+              <a class="nav-link" href="{{ url_for('register') }}">New Userr</a>
             </li>
+                       <li class="nav-item">
+                         <a class="nav-link" href="{{ url_for('admin') }}">Admin</a>
+                       </li>
             {% endif %}
           </ul>
         </div>

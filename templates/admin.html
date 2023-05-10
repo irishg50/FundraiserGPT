@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <h2 class="text-center">Login</h2>
+        
+        <!-- Display flashed messages -->
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <div class="alert alert-danger">
+              {{ messages[0] }}
+            </div>
+          {% endif %}
+        {% endwith %}
+        
+
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+
