@@ -28,7 +28,7 @@ app = Flask(__name__)
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY")
 
 DATABASE_URL = os.environ.get('DATABASE_URL')
-#DATABASE_URL = "postgresql://postgres:POST50pat!@localhost:5432/fund_app_db"
+#DATABASE_URL = "postgresql://irish:POST50pat!@localhost:5432/fund_app_db"
 
 if DATABASE_URL is None:
     raise ValueError("DATABASE_URL environment variable is not set")
@@ -122,6 +122,11 @@ def generate_unique_user_id():
         user_id = ''.join(random.choices(string.ascii_letters + string.digits, k=12))
     return user_id
 
+@app.route("/")
+def index():
+    return render_template("index.html")
+
+
 @app.route("/chat_history")
 @login_required
 def chat_history():
@@ -186,7 +191,7 @@ def register():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for("index"))
+        return redirect(url_for("start"))
 
     if request.method == "POST":
         username = request.form["username"]
@@ -208,7 +213,7 @@ def login():
             user.last_login = datetime.datetime.utcnow()  # update last_login
             db.session.commit()
             login_user(user)
-            return redirect(url_for("index"))
+            return redirect(url_for("start"))
 
         # Log the result of the password check
         app.logger.info("Invalid username or password")
@@ -222,9 +227,9 @@ def logout():
     logout_user()
     return redirect(url_for("login"))
 
-@app.route("/", methods=["GET", "POST"])
+@app.route("/start", methods=["GET", "POST"])
 @login_required
-def index():
+def start():
     if request.method == "POST":
         try:
             org_name = request.form["org_name"]
@@ -296,7 +301,7 @@ def index():
                 response = send_request_to_chatgpt(final_prompt, model)  # Use the desired engine
             except Timeout:
                 flash("The request to the ChatGPT service timed out. Please try again.")
-                return redirect(url_for("index"))
+                return redirect(url_for("start"))
 
             if response["success"]:
                     chat_request = ChatRequest(user_id=current_user.id, prompt=final_prompt, engine="gpt-3.5-turbo", chatgpt_response=response["response"], topic=topic, timestamp=datetime.datetime.utcnow())
@@ -321,7 +326,7 @@ def index():
             print("Exception:", e)
             return make_response(jsonify({"error": "Internal Server Error"}), 500)
 
-    return render_template("index.html", org_name=current_user.org_name, user_class=current_user.user_class)
+    return render_template("start.html", org_name=current_user.org_name, user_class=current_user.user_class)
 
 @app.route("/continue_conversation", methods=["POST"])
 @login_required

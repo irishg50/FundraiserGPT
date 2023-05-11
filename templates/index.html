@@ -1,88 +1,15 @@
-{% extends "base.html" %}
+    {% extends "base.html" %}
 
 {% block content %}
 <div class="container">
-  <form id="chat-form" method="post" class="mb-3" action="{{ url_for('index') }}" onsubmit="showSpinner()">
-    <div class="mb-3">
-      <h3 class="mb-0"><b>Help me write a fundraising appeal for {{ org_name }}.</b></h3>
-      <input type="hidden" id="org_name" name="org_name" class="form-control" value="{{ org_name }}" readonly>
-    </div>
-    <div class="mb-3">
-      <p class="mb-0"><i>Sure! What is the <b>primary topic</b> for this appeal? (max 250 char.)</i></p>
-      <input type="text" id="topic" name="topic" class="form-control" maxlength="250">
-    </div>
-    <div class="mb-3">
-      <p class="mb-0"><i>Who is the intended <b>audience</b> for this appeal?</i></p>
-      <input type="text" id="audience" name="audience" class="form-control" maxlength="250">
-    </div>
-    <div class="mb-3">
-      <p class="mb-0"><i>What is the <b>urgency</b> for this appeal?</i></p>
-      <input type="text" id="urgency" name="urgency" class="form-control" maxlength="250">
-    </div>
-    <div class="mb-3">
-      <p class="mb-0"><i>What should donors know about the <b>impact</b> their donation can make?</i></p>
-      <textarea id="impact" name="impact" class="form-control" maxlength="250" rows="3"></textarea>
-    </div>
-    <div class="mb-3">
-      <p class="mb-0"><i>Are there any <b>additional considerations</b> or specific details for this campaign?</i></p>
-      <textarea id="notes" name="notes" class="form-control" maxlength="500" rows="4"></textarea>
-    </div>
-    <div class="mb-3">
-      <p class="mb-0">What <b>output format</b> do you need? (select one)</p>
-      <div class="form-check">
-        <input class="form-check-input" type="radio" name="format" id="formatEmail" value="Email">
-        <label class="form-check-label" for="formatEmail">Email</label>
-      </div>
-      <div class="form-check">
-        <input class="form-check-input" type="radio" name="format" id="formatFacebookPost" value="Facebook">
-        <label class="form-check-label" for="formatFacebookPost">Facebook Post</label>
-      </div>
-      <div class="form-check">
-        <input class="form-check-input" type="radio" name="format" id="formatTwitter" value="Twitter">
-        <label class="form-check-label" for="formatTwitter">Twitter Tweet</label>
-      </div>
-      <div class="form-check">
-        <input class="form-check-input" type="radio" name="format" id="formatDonationForm" value="DonationForm">
-        <label class="form-check-label" for="formatDonationForm">Donation webage copy</label>
-      </div>
-      <div class="form-check">
-<input class="form-check-input" type="radio" name="format" id="formatLetter" value="Letter">
-<label class="form-check-label" for="formatLetter">Written Letter</label>
-</div>
-<!-- Add more radio buttons for the other formats -->
-<div class="mb-3">
-{% if user_class > 4 %}
-<select name="model" id="model" class="form-select">
-<option value="gpt-3.5-turbo">ChatGPT 3.5</option>
-<option value="gpt-4">GPT-4</option>
-{% else %}
-<input type="hidden" name="model" id="model" value="gpt-3.5-turbo">
-{% endif %}
-</select>
-</div>
-</div>
-<!-- Add other input fields, such as engine, choice1, and check1 -->
-<button type="submit" class="btn btn-primary">Submit</button>
-<button type="button" onclick="clearForm()">Reset Form</button>
-<div id="loading-spinner" class="spinner-border text-primary" role="status" style="display:none;">
-<span class="sr-only">.</span>
-</div>
 
-  </form>
-  <p> </p>
-</div>
-<script>
-function showSpinner() {
-  // Show the spinner
-  document.getElementById("loading-spinner").style.display = "inline-block";
-}
+<!-- Hero Section -->
+<section class="jumbotron text-center">
+    <h1 class="display-4">FundraiserGPT</h1>
+    <p class="lead">A ChatGPT designed for fundraisers</p>
+    <a class="btn btn-primary btn-lg" href="/start" role="button">Login</a>
+</section>
 
-function clearForm() {
-  // Get the form element
-  var form = document.getElementById("chat-form");
-  
-  // Reset the form
-  form.reset();
-}
-</script>
+
+</div>
 {% endblock %}
