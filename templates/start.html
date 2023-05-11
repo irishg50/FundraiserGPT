@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="container">
-  <form id="chat-form" method="post" class="mb-3" action="{{ url_for('index') }}" onsubmit="showSpinner()">
+  <form id="chat-form" method="post" class="mb-3" action="{{ url_for('start') }}" onsubmit="showSpinner()">
     <div class="mb-3">
       <h3 class="mb-0"><b>Help me write a fundraising appeal for {{ org_name }}</b></h3>
       <input type="hidden" id="org_name" name="org_name" class="form-control" value="{{ org_name }}" readonly>
@@ -84,7 +84,7 @@
 </div>
 <!-- Add other input fields, such as engine, choice1, and check1 -->
     <div class="mb-3">
-<p class="mb-0"><i>Okay, that's enough to create a first draft. Click the Generate button to proceed.</i></p>
+<p class="mb-0"><i>Okay, that's enough to create a first draft. Click Generate Appeal to continue.</i></p>
 </div>
 <button type="submit" class="btn btn-primary">Generate Appeal</button>
 <button type="button" onclick="clearForm()">Clear Form and Restart</button>
