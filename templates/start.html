@@ -50,27 +50,14 @@
       <p class="mb-0"><i>What <b>output format</b> do you need? (select one)</i></p>
   </div>
     <div class="mb-3">
-      <div class="form-check">
-        <input class="form-check-input" type="radio" name="format" id="formatEmail" value="Email">
-        <label class="form-check-label" for="formatEmail">Email</label>
-      </div>
-      <div class="form-check">
-        <input class="form-check-input" type="radio" name="format" id="formatFacebookPost" value="Facebook">
-        <label class="form-check-label" for="formatFacebookPost">Facebook Post</label>
-      </div>
-      <div class="form-check">
-        <input class="form-check-input" type="radio" name="format" id="formatTwitter" value="Twitter">
-        <label class="form-check-label" for="formatTwitter">Twitter Tweet</label>
-      </div>
-      <div class="form-check">
-        <input class="form-check-input" type="radio" name="format" id="formatDonationForm" value="DonationForm">
-        <label class="form-check-label" for="formatDonationForm">Donation webage copy</label>
-      </div>
-      <div class="form-check">
-<input class="form-check-input" type="radio" name="format" id="formatLetter" value="Letter">
-<label class="form-check-label" for="formatLetter">Written Letter</label>
+
+{% for format in formats %}
+<div class="form-check">
+    <input class="form-check-input" type="radio" name="format" id="format{{ format.name }}" value="{{ format.name }}">
+    <label class="form-check-label" for="format{{ format.name }}">{{ format.desc }}</label>
 </div>
-<!-- Add more radio buttons for the other formats -->
+{% endfor %}
+
 <div class="mb-3">
 {% if user_class > 4 %}
 <select name="model" id="model" class="form-select">

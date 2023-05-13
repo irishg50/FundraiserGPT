@@ -27,8 +27,8 @@ OPENAI_KEY = os.environ.get("OPENAI_KEY")
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY")
 
-DATABASE_URL = os.environ.get('DATABASE_URL')
-#DATABASE_URL = "postgresql://irish:POST50pat!@localhost:5432/fund_app_db"
+#DATABASE_URL = os.environ.get('DATABASE_URL')
+DATABASE_URL = "postgresql://irish:POST50pat!@localhost:5432/fund_app_db"
 
 if DATABASE_URL is None:
     raise ValueError("DATABASE_URL environment variable is not set")
@@ -77,6 +77,13 @@ class ChatRequest(db.Model):
 
     def __repr__(self):
         return f"<ChatRequest {self.prompt}>"
+
+
+class Formats(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(25), nullable=False)
+    desc = db.Column(db.String(100), nullable=False) 
+    guideline =db.Column(db.String(500), nullable=False)
 
 
 
@@ -265,33 +272,15 @@ def start():
                 final_prompt += ". Also the consider the following points when crafting the message: " + notes
 
             # add format and fundraising guidelines
-             
-            output = ""
-            guidelines = ""
-            
-            if format == "Email":
-                output = "an email message of between 6-10 paragraphs"                        
-                guidelines = "1) write an attention-grabbing opener at the start 2) Focus on the impact of the organization's work 3) Include a compeling story  4) have a strong call-to-action  5) include a post-script that reinforces the main call-to-action. Please list at bottom all source references for documents quoted or cited."
 
-            if format == "Facebook":
-                output = "a post suitable for Facebook of no more than 1000 characters."                        
-                guidelines = "1) the message should begin with an attention-getting headline 2) do not use 'Dear' or any other salutation at the start of the message  2) Include a description of a suitable image at the bottom 3) have a strong call-to-action 4) include several hashtags related to the message content. Please list at bottom all source references for documents quoted or cited."
-     
-            if format == "Twitter":
-                output = "3 unique tweets or not more than more than 400 characters each."                        
-                guidelines = "1) Include emojis if possible 2) have e a strong call-to-action 3) include several hashtags relatedto the message content. Please list at bottom all source references for documents quoted or cited."
-         
-            if format == "DonationForm":
-                output = "Copy for a donation form for no more than 5 paragraphs."                        
-                guidelines = "1) Express appreciation for the decision to make a donation 2) Reinforce the message of the importance of making a donations 3) Describe briefly how donations are used to further it impact of the organization's work. 4) do not use 'Dear' or any other salutation at the start of the message 2) do not use 'Sincerely' or any other signpff at the end of the message.   Please list at bottom all source references for documents quoted or cited."
+            format_row = Formats.query.filter_by(name=format).first()
 
-            if format == "Letter":
-                output = "A personalized printed letter of at least 15 paragraphs, but no more than 25 paragraphs."                        
-                guidelines = "1) write an attention-grabbing opener at the start 2) Focus on the impact of the organization's work 3) Include a compeling story  4) have a strong call-to-action  5) include a post-script that reinforces the main call-to-action. Please list at bottom all source references for documents quoted or cited."
-    
-    
-            final_prompt += ", The message should be in the form of " + output
-            final_prompt += ". As much as possible, use the following guidelines for writing the message: " + guidelines
+            if format_row is not None:
+                 output = format_row.desc
+                 guideline = format_row.guideline
+                 final_prompt += ", The message should be in the form of " + output
+                 final_prompt += ". As much as possible, use the following guidelines for writing the message: " + guideline
+
 
             #select the model
             model = request.form["model"]
@@ -326,7 +315,10 @@ def start():
             print("Exception:", e)
             return make_response(jsonify({"error": "Internal Server Error"}), 500)
 
-    return render_template("start.html", org_name=current_user.org_name, user_class=current_user.user_class)
+    # Fetch all rows from the Formats table
+    formats = Formats.query.all()
+
+    return render_template("start.html", org_name=current_user.org_name, user_class=current_user.user_class, formats=formats)
 
 @app.route("/continue_conversation", methods=["POST"])
 @login_required
