@@ -48,10 +48,14 @@ app = Flask(__name__)
 app.config.update(
 #    CELERY_BROKER_URL='rediss://:p952ada0b5ae194c7c49dd484e19814e03c9a324296ecfcfe8ff1ae4aca4ebc2e@ec2-3-234-14-83.compute-1.amazonaws.com:14850?ssl_cert_reqs=CERT_REQUIRED',
 #    CELERY_RESULT_BACKEND='rediss://:p952ada0b5ae194c7c49dd484e19814e03c9a324296ecfcfe8ff1ae4aca4ebc2e@ec2-3-234-14-83.compute-1.amazonaws.com:14850?ssl_cert_reqs=CERT_REQUIRED'
-    CELERY_BROKER_URL=os.environ.get('REDIS_URL'),
-    CELERY_RESULT_BACKEND=os.environ.get('REDIS_URL'),
+
+    broker_url='rediss://:p952ada0b5ae194c7c49dd484e19814e03c9a324296ecfcfe8ff1ae4aca4ebc2e@ec2-3-234-14-83.compute-1.amazonaws.com:14850',
+    result_backend='rediss://:p952ada0b5ae194c7c49dd484e19814e03c9a324296ecfcfe8ff1ae4aca4ebc2e@ec2-3-234-14-83.compute-1.amazonaws.com:14850',
     broker_use_ssl={'ssl_cert_reqs': ssl.CERT_NONE},
     result_backend_use_ssl={'ssl_cert_reqs': ssl.CERT_NONE},
+)
+
+
 )
 celery = make_celery(app)
 
