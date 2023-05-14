@@ -432,6 +432,12 @@ def taskstatus():
             'state': task.state,
             'status': 'Pending...'
         }
+    elif task.state == 'SUCCESS':
+        response = {
+            'state': task.state,
+            'status': 'Task completed successfully',
+            'result': task.result
+        }
     elif task.state != 'FAILURE':
         response = {
             'state': task.state,
@@ -446,6 +452,7 @@ def taskstatus():
             'status': str(task.info),  # this is the exception raised
         }
     return jsonify(response)
+
 
 
 
