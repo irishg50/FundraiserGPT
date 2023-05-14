@@ -319,8 +319,11 @@ def start():
 
             try:
                 task = send_request_to_chatgpt_task.apply_async(args=[final_prompt, model])
+                print(f"Task created with ID: {task.id}")
                 session['task_id'] = task.id
-                return redirect(url_for('status'))
+                print(f"Task ID stored in session: {session.get('task_id')}")
+                return redirect(url_for('status'))            
+
             except Exception as e:
                 print("Exception:", e)
                 return make_response(jsonify({"error": "Internal Server Error"}), 500)
