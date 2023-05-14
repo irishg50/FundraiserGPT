@@ -385,6 +385,7 @@ def reload_response(chat_request_id):
 @app.route("/response")
 @login_required
 def response():
+    chatgpt_response = ""
     task_id = session.get('task_id')
     task = send_request_to_chatgpt_task.AsyncResult(task_id)
 
