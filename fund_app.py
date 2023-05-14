@@ -55,8 +55,6 @@ app.config.update(
     result_backend_use_ssl={'ssl_cert_reqs': ssl.CERT_NONE},
 )
 
-
-)
 celery = make_celery(app)
 
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY")
