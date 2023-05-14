@@ -25,28 +25,6 @@ load_dotenv()
 
 OPENAI_KEY = os.environ.get("OPENAI_KEY")
 
-app = Flask(__name__)
-app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY")
-
-DATABASE_URL = os.environ.get('DATABASE_URL')
-#DATABASE_URL = "postgresql://irish:POST50pat!@localhost:5432/fund_app_db"
-
-if DATABASE_URL is None:
-    raise ValueError("DATABASE_URL environment variable is not set")
-elif DATABASE_URL.startswith("postgres://"):
-    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
-
-app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
-    
-db = SQLAlchemy(app)
-
-migrate = Migrate(app, db)
-
-bcrypt = Bcrypt(app)
-login_manager = LoginManager(app)
-login_manager.login_view = "login"
-
-
 
 def make_celery(app):
     celery = Celery(
@@ -70,6 +48,25 @@ app.config.update(
     CELERY_RESULT_BACKEND='rediss://:p952ada0b5ae194c7c49dd484e19814e03c9a324296ecfcfe8ff1ae4aca4ebc2e@ec2-3-234-14-83.compute-1.amazonaws.com:14850'
 )
 celery = make_celery(app)
+
+app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY")
+DATABASE_URL = os.environ.get('DATABASE_URL')
+#DATABASE_URL = "postgresql://irish:POST50pat!@localhost:5432/fund_app_db"
+
+if DATABASE_URL is None:
+    raise ValueError("DATABASE_URL environment variable is not set")
+elif DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+
+app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
+    
+db = SQLAlchemy(app)
+
+migrate = Migrate(app, db)
+
+bcrypt = Bcrypt(app)
+login_manager = LoginManager(app)
+login_manager.login_view = "login"
 
 
 @celery.task(bind=True)
