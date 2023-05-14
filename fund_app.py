@@ -20,7 +20,7 @@ import random
 import string
 from celery import Celery
 import redis
-
+import ssl
 
 load_dotenv()
 
