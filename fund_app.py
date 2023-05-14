@@ -320,7 +320,7 @@ def start():
                 print(f"Task created with ID: {task.id}")
                 session['task_id'] = task.id
                 print(f"Task ID stored in session: {session.get('task_id')}")
-                return redirect(url_for('status'))            
+                return redirect(url_for('taskstatus'))            
 
             except Exception as e:
                 print("Exception:", e)
