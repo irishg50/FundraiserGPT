@@ -51,8 +51,8 @@ app.config.update(
 
     broker_url='rediss://:p952ada0b5ae194c7c49dd484e19814e03c9a324296ecfcfe8ff1ae4aca4ebc2e@ec2-3-234-14-83.compute-1.amazonaws.com:14850',
     result_backend='rediss://:p952ada0b5ae194c7c49dd484e19814e03c9a324296ecfcfe8ff1ae4aca4ebc2e@ec2-3-234-14-83.compute-1.amazonaws.com:14850',
-    broker_use_ssl={'ssl_cert_reqs': ssl.CERT_NONE},
-    result_backend_use_ssl={'ssl_cert_reqs': ssl.CERT_NONE},
+    broker_use_ssl={'ssl_cert_reqs': ssl.CERT_REQUIRED},
+    result_backend_use_ssl={'ssl_cert_reqs': ssl.CERT_REQUIRED},
 )
 
 celery = make_celery(app)
