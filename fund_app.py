@@ -18,6 +18,7 @@ from requests.exceptions import Timeout
 import datetime
 import random
 import string
+from celery import Celery
 
 load_dotenv()
 
@@ -44,6 +45,41 @@ migrate = Migrate(app, db)
 bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
 login_manager.login_view = "login"
+
+
+
+def make_celery(app):
+    celery = Celery(
+        app.import_name,
+        backend=app.config['CELERY_RESULT_BACKEND'],
+        broker=app.config['CELERY_BROKER_URL']
+    )
+    celery.conf.update(app.config)
+
+    class ContextTask(celery.Task):
+        def __call__(self, *args, **kwargs):
+            with app.app_context():
+                return self.run(*args, **kwargs)
+
+    celery.Task = ContextTask
+    return celery
+
+app = Flask(__name__)
+app.config.update(
+    CELERY_BROKER_URL='rediss://:p952ada0b5ae194c7c49dd484e19814e03c9a324296ecfcfe8ff1ae4aca4ebc2e@ec2-3-234-14-83.compute-1.amazonaws.com:14850,
+    CELERY_RESULT_BACKEND='rediss://:p952ada0b5ae194c7c49dd484e19814e03c9a324296ecfcfe8ff1ae4aca4ebc2e@ec2-3-234-14-83.compute-1.amazonaws.com:14850'
+)
+celery = make_celery(app)
+
+
+@celery.task(bind=True)
+def send_request_to_chatgpt_task(self, final_prompt, model):
+    try:
+        response = send_request_to_chatgpt(final_prompt, model)  # Use the desired engine
+        return response
+    except Exception as e:
+        self.retry(exc=e, countdown=60, max_retries=3)
+
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -256,9 +292,6 @@ def start():
             format = sanitize_input(format)
 
             # Concatenate the fields to create the final prompt
-            #final_prompt = f"{prompt} Topic: {topic}. Audience: {audience}. Notes: {notes}. Urgency: {urgency}. Format: {format}."
-
-            #build the content prompt from the form input
             final_prompt = "You are a helpful fundraising copy writer, helping to prepare fundraising content for " + org_name + "."
             final_prompt += " The message should have an overall tone of " + "earnest and urgent" 
             if audience :
@@ -271,8 +304,6 @@ def start():
             if notes :
                 final_prompt += ". Also the consider the following points when crafting the message: " + notes
 
-            # add format and fundraising guidelines
-
             format_row = Formats.query.filter_by(name=format).first()
 
             if format_row is not None:
@@ -281,33 +312,17 @@ def start():
                  final_prompt += ", The message should be in the form of " + output
                  final_prompt += ". As much as possible, use the following guidelines for writing the message: " + guideline
 
-
             #select the model
             model = request.form["model"]
 
-
             try:
-                response = send_request_to_chatgpt(final_prompt, model)  # Use the desired engine
-            except Timeout:
-                flash("The request to the ChatGPT service timed out. Please try again.")
-                return redirect(url_for("start"))
+                task = send_request_to_chatgpt_task.apply_async(args=[final_prompt, model])
+                session['task_id'] = task.id
+                return redirect(url_for('status'))
+            except Exception as e:
+                print("Exception:", e)
+                return make_response(jsonify({"error": "Internal Server Error"}), 500)
 
-            if response["success"]:
-                    chat_request = ChatRequest(user_id=current_user.id, prompt=final_prompt, engine="gpt-3.5-turbo", chatgpt_response=response["response"], topic=topic, timestamp=datetime.datetime.utcnow())
-                    db.session.add(chat_request)
-                    db.session.commit()
-
-            # Store variables in session
-                    session['chat_request'] = final_prompt
-                    session['topic'] = topic
-                    session['model'] = model
-                    session['chatgpt_response'] = response["response"]
-
-                    return redirect(url_for("response"))
-    
-            else:
-                print("Error from send_request_to_chatgpt:", response["error"])
-                return make_response(jsonify({"error": response["error"]}), 400)
         except ValueError as ve:
             print("ValueError:", ve)
             return make_response(jsonify({"error": str(ve)}), 400)
@@ -366,11 +381,26 @@ def reload_response(chat_request_id):
 @app.route("/response")
 @login_required
 def response():
-    chatgpt_response = session.get('chatgpt_response')
-    chat_request = session.get('chat_request')
-    topic = session.get('topic')
-    model = session.get('model')
+    task_id = session.get('task_id')
+    task = send_request_to_chatgpt_task.AsyncResult(task_id)
+
+    if task.state == 'SUCCESS':
+        response = task.get()
+        chatgpt_response = response["response"]
+
+        # Store the result in the database
+        chat_request = ChatRequest(user_id=current_user.id, prompt=final_prompt, engine="gpt-3.5-turbo", chatgpt_response=chatgpt_response, topic=topic, timestamp=datetime.datetime.utcnow())
+        db.session.add(chat_request)
+        db.session.commit()
+
+        # Store variables in session
+        session['chat_request'] = final_prompt
+        session['topic'] = topic
+        session['model'] = model
+        session['chatgpt_response'] = chatgpt_response
+
     return render_template("response.html", response=chatgpt_response, chat_request=chat_request, topic=topic, model=model)
+
 
 @app.route("/admin")
 @login_required
@@ -387,6 +417,31 @@ def admin():
     else:
         flash("You do not have permission to access this page.")
         return redirect(url_for("index"))
+
+@app.route('/status')
+@login_required
+def taskstatus():
+    task_id = session.get('task_id')
+    task = send_request_to_chatgpt_task.AsyncResult(task_id)
+    if task.state == 'PENDING':
+        response = {
+            'state': task.state,
+            'status': 'Pending...'
+        }
+    elif task.state != 'FAILURE':
+        response = {
+            'state': task.state,
+            'status': str(task.info),  # this is the result you returned from `send_request_to_chatgpt_task`
+        }
+        if 'result' in task.info:
+            response['result'] = task.info['result']
+    else:
+        # something went wrong in the background job
+        response = {
+            'state': task.state,
+            'status': str(task.info),  # this is the exception raised
+        }
+    return jsonify(response)
 
 
 
