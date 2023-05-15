@@ -320,6 +320,9 @@ def start():
                 task = send_request_to_chatgpt_task.apply_async(args=[final_prompt, model])
                 print(f"Task created with ID: {task.id}")
                 session['task_id'] = task.id
+                session['final_prompt'] = final_prompt
+                session['topic'] = topic
+                session['model'] = model
                 print(f"Task ID stored in session: {session.get('task_id')}")
                 return redirect(url_for('taskstatus'))            
 
@@ -394,14 +397,14 @@ def response():
         chatgpt_response = response["response"]
 
         # Store the result in the database
+        final_prompt = session.get('final_prompt')
+        topic = session.get('topic')
+        model = session.get('model') 
         chat_request = ChatRequest(user_id=current_user.id, prompt=final_prompt, engine="gpt-3.5-turbo", chatgpt_response=chatgpt_response, topic=topic, timestamp=datetime.datetime.utcnow())
         db.session.add(chat_request)
         db.session.commit()
 
         # Store variables in session
-        session['chat_request'] = final_prompt
-        session['topic'] = topic
-        session['model'] = model
         session['chatgpt_response'] = chatgpt_response
 
     return render_template("response.html", response=chatgpt_response, chat_request=chat_request, topic=topic, model=model)
