@@ -398,7 +398,8 @@ def reload_response(chat_request_id):
 def response():
     chatgpt_response = ""
     task_id = session.get('task_id')
-    task = send_request_to_chatgpt_task.AsyncResult(task_id)
+    print(f"Task ID retrieved from session: {task_id}")
+    task = AsyncResult(task_id)
 
     while task.state not in ['SUCCESS', 'FAILURE']:
         # Wait for a short interval before checking the task status again
