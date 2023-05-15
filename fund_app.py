@@ -331,7 +331,7 @@ def start():
                 session['topic'] = topic
                 session['model'] = model
                 print(f"Task ID stored in session: {session.get('task_id')}")
-                return redirect(url_for('taskstatus'))            
+                return redirect(url_for('response'))            
 
             except Exception as e:
                 print("Exception:", e)
