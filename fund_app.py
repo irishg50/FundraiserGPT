@@ -325,14 +325,14 @@ def start():
 
             except Exception as e:
                 print("Exception:", e)
-                return make_response(jsonify({"error": "Internal Server Error"}), 500)
+                return make_response(jsonify({"error": "Internal Server Error1"}), 500)
 
         except ValueError as ve:
             print("ValueError:", ve)
             return make_response(jsonify({"error": str(ve)}), 400)
         except Exception as e:
             print("Exception:", e)
-            return make_response(jsonify({"error": "Internal Server Error"}), 500)
+            return make_response(jsonify({"error": "Internal Server Error2"}), 500)
 
     # Fetch all rows from the Formats table
     formats = Formats.query.all()
