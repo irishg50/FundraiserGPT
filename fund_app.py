@@ -158,12 +158,6 @@ def send_request_to_chatgpt(prompt, engine):
 
     response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=data)
 
-    if response.status_code == 200:
-        chatgpt_response = response.json()
-        message = chatgpt_response["choices"][0]["message"]["content"]
-        return {"success": True, "response": message}
-    else:
-        return {"success": False, "error": response.text}
 
 def generate_unique_user_id():
     # Generate a random alphanumeric string of length 12
