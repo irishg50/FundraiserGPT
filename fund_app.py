@@ -21,6 +21,7 @@ import string
 from celery import Celery
 import redis
 import ssl
+from time import sleep
 
 load_dotenv()
 
@@ -385,12 +386,17 @@ def reload_response(chat_request_id):
         flash("Chat request not found.")
         return redirect(url_for("chat_history"))
 
+
 @app.route("/response")
 @login_required
 def response():
     chatgpt_response = ""
     task_id = session.get('task_id')
     task = send_request_to_chatgpt_task.AsyncResult(task_id)
+
+    while task.state not in ['SUCCESS', 'FAILURE']:
+        # Wait for a short interval before checking the task status again
+        sleep(1)
 
     if task.state == 'SUCCESS':
         response = task.get()
@@ -407,7 +413,12 @@ def response():
         # Store variables in session
         session['chatgpt_response'] = chatgpt_response
 
-    return render_template("response.html", response=chatgpt_response, chat_request=chat_request, topic=topic, model=model)
+        # Render the template once the task is successful
+        return render_template("response.html", response=chatgpt_response, chat_request=chat_request, topic=topic, model=model)
+
+    # If the task fails, you can redirect or render an error template
+    return render_template("error.html", error_message="Task failed.")
+
 
 
 @app.route("/admin")
