@@ -19,7 +19,7 @@ import datetime
 import random
 import string
 from celery import Celery
-from celery.result import AsyncResult
+from celery import AsyncResult
 import redis
 import ssl
 from time import sleep
