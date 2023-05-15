@@ -106,29 +106,6 @@
 }
 </style>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script>
-  $(document).ready(function() {
-    function poll() {
-        $.ajax({
-            url: "/status",
-            success: function(data) {
-                if (data.state === 'SUCCESS' || data.state === 'FAILURE') {
-                    // The task has finished. Update the page accordingly.
-                    window.location.href = "/response";
-                } else {
-                    // The task is still running. Wait and try again.
-                    setTimeout(poll, 2000);
-                }
-            },
-            dataType: "json",
-            timeout: 2000
-        });
-    }
-    poll();
-  });
-  </script>
-
 <script>
 function showSpinner() {
   // Show the spinner
