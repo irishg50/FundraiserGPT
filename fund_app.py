@@ -417,7 +417,12 @@ def response():
         return render_template("response.html", response=chatgpt_response, chat_request=chat_request, topic=topic, model=model)
 
     # If the task fails, you can redirect or render an error template
-    return render_template("error.html", error_message="Task failed.")
+    if task.state == 'FAILURE':
+        response = {
+            'state': task.state,
+            'status': str(task.info),  # this is the result you updated from `send_request_to_chatgpt_task`
+        }
+        return jsonify(response)
 
 
 
