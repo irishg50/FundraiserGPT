@@ -350,9 +350,7 @@ def continue_conversation():
 @login_required
 def reload_response(chat_request_id):
     # Retrieve the ChatRequest record based on the provided id
-
-    chat_request = ChatRequest.query.get(chat_request_id)
-    print(chat_request)
+    chat_request = ChatRequest.query.filter_by(id=chat_request_id).first()
     if chat_request:
         chat_request = chat_request.prompt
         chatgpt_response = chat_request.chatgpt_response
