@@ -353,12 +353,12 @@ def reload_response(chat_request_id):
     chat_request = ChatRequest.query.get(chat_request_id)
     if chat_request:
         # Store the necessary parameters in the session
-        session['chat_request'] = chat_request.prompt
-        session['chatgpt_response'] = chat_request.chatgpt_response
-        session['topic'] = chat_request.topic
-        session['model'] = chat_request.engine
+        chat_request = chat_request.prompt
+        chatgpt_response = chat_request.chatgpt_response
+        topic = chat_request.topic
+        model = chat_request.engine
         # Redirect to the response route
-        return redirect(url_for("response"))
+        return render_template("response.html", response=chatgpt_response, chat_request=chat_request, topic=topic, model=model)
     else:
         flash("Chat request not found.")
         return redirect(url_for("chat_history"))
