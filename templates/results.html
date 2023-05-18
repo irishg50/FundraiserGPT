@@ -14,7 +14,11 @@ function fetchTaskResult(taskId) {
 
         // Task result is available, display it on the web page
         const resultElement = document.getElementById('resultDiv');
-        resultElement.textContent = JSON.stringify(data.result);
+        const jsonString = JSON.stringify(data.result);
+        const resultData = JSON.parse(jsonString);
+
+        resultElement.textContent = resultData.response;
+
       } else {
         // Task result is still pending, continue checking after a delay
         setTimeout(() => fetchTaskResult(taskId), 3000); // Check again after 5 seconds
