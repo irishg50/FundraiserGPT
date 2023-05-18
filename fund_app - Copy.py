@@ -332,28 +332,7 @@ def start():
                 session['topic'] = topic
                 session['model'] = model
                 print(f"Task ID stored in session: {session.get('task_id')}")
-
-                task_id = session.get('task_id')
-
-                task = AsyncResult(task_id)
-                print("Async Task created")
-
-                while task.state not in ['SUCCESS', 'FAILURE']:
-                    print(f"Task state is: {task.state}")
-                    # Wait for a short interval before checking the task status again
-                    sleep(1)
-
-                if task.state == 'SUCCESS':
-                    return redirect(url_for('response'))
-
-                # If the task fails, you can redirect or render an error template
-                if task.state == 'FAILURE':
-                    response = {
-                        'state': task.state,
-                        'status': str(task.info),  # this is the result you updated from `send_request_to_chatgpt_task`
-                    }
-                    return jsonify(response)
-
+                return redirect(url_for('response'))            
 
             except Exception as e:
                 print("Exception:", e)
@@ -418,9 +397,16 @@ def reload_response(chat_request_id):
 @app.route("/response")
 @login_required
 def response():
-        task_id = session.get('task_id')
-        print(f"Task ID retrieved from session: {task_id}")
+    chatgpt_response = ""
+    task_id = session.get('task_id')
+    print(f"Task ID retrieved from session: {task_id}")
+    task = AsyncResult(task_id)
 
+    while task.state not in ['SUCCESS', 'FAILURE']:
+        # Wait for a short interval before checking the task status again
+        sleep(1)
+
+    if task.state == 'SUCCESS':
         response = task.get()
         chatgpt_response = response["response"]
 
@@ -438,7 +424,13 @@ def response():
         # Render the template once the task is successful
         return render_template("response.html", response=chatgpt_response, chat_request=chat_request, topic=topic, model=model)
 
-
+    # If the task fails, you can redirect or render an error template
+    if task.state == 'FAILURE':
+        response = {
+            'state': task.state,
+            'status': str(task.info),  # this is the result you updated from `send_request_to_chatgpt_task`
+        }
+        return jsonify(response)
 
 
 
