@@ -14,17 +14,12 @@ function fetchTaskResult(taskId) {
             spinner.style.display = "none";
         }
 
-        const messageString = 'Hello, world!';
-        const messageElement = document.getElementById('message');
-        messageElement.textContent = messageString;
-
         // Task result is available, display it on the web page
         const resultElement = document.getElementById('resultDiv');
         const jsonString = JSON.stringify(data.result);
         const resultData = JSON.parse(jsonString);
 
         resultElement.textContent = resultData.response;
-
 
 
       } else {
@@ -43,11 +38,10 @@ fetchTaskResult('{{ task_id }}');
   </script>
 
 <div id="loading-spinner" class="spinner-border text-primary" role="status" style="display:inline-block;">
-<span class="sr-only">.</span>
-<p> Working ...</p>
+  <span class="sr-only">.</span>
 </div>
 <pre>
-<div id="resultDiv"></div>
+  <div id="resultDiv"></div>
 </pre>
 
 {% endblock %}
