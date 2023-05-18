@@ -2,7 +2,14 @@
 
 {% block content %}
 
-      <script>
+
+    <style>
+#resultDiv {
+  white-space: pre-wrap; /* Word wrap for pre-formatted text */
+}
+</style>
+
+     <script>
 function fetchTaskResult(taskId) {
   fetch('/api/tasks/' + taskId)
     .then(response => response.json())
