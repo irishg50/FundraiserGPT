@@ -443,7 +443,8 @@ def get_task_status(task_id):
 @app.route("/results")
 @login_required
 def results():
-        return render_template("results.html")
+        task_id = session.get('task_id')
+        return render_template("results.html", task_id=task_id)
 
 
 @app.route("/admin")

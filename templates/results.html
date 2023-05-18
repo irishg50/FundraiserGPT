@@ -3,45 +3,33 @@
 {% block content %}
 
       <script>
-    function checkTaskStatus() {
-      // Make an AJAX request to the API endpoint that provides the task status
-      fetch('/task/status') // Replace '/task/status' with the actual API endpoint URL
-        .then(response => response.json())
-        .then(data => {
-          // Process the task status data
-          console.log(data); // Example: log the task status to the console
+function fetchTaskResult(taskId) {
+  fetch('/api/tasks/' + taskId)
+    .then(response => response.json())
+    .then(data => {
+      if (data.status === 'SUCCESS') {
+        // Task result is available, display it on the web page
+        const resultDiv = document.getElementById('result');
+        resultDiv.innerText = data.result;
+      } else {
+        // Task result is still pending, continue checking after a delay
+        setTimeout(() => fetchTaskResult(taskId), 3000); // Check again after 5 seconds
+      }
+    })
+    .catch(error => {
+      console.error('Error occurred while fetching task result:', error);
+    });
+}
 
-          // Check if the task is completed or still in progress
-          if (data.status === 'SUCCESS') {
-            // Task is completed
-            console.log('Task completed!');
-            // Perform further actions based on task completion
-            // For example, update the UI or display the task result
-            document.getElementById('result').innerText = data.result;
-          } else if (data.status === 'FAILURE') {
-            // Task has failed
-            console.log('Task failed!');
-            // Perform error handling or display error message
-            document.getElementById('result').innerText = 'Task failed!';
-          } else {
-            // Task is still in progress
-            console.log('Task in progress...');
-            // Continue checking task status after a delay
-            setTimeout(checkTaskStatus, 5000); // Check again after 5 seconds
-          }
-        })
-        .catch(error => {
-          console.error('Error occurred while checking task status:', error);
-          // Perform error handling or display error message
-          document.getElementById('result').innerText = 'Error occurred while checking task status';
-        });
-    }
-
-    // Call the function to start checking the task status
-    checkTaskStatus();
+// Call the function to fetch the task result for a specific task ID
+fetchTaskResult('task_id');
   </script>
 
 <div class="container" style="background-color:#fff;">
+
+<div id="result"></div>
+
+
   <h3>Response</h3>
   <div id="response-display" class="mb-3" style="white-space: pre-wrap; word-wrap: break-word;">
     {{ response }}
