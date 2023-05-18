@@ -7,13 +7,14 @@
     {{ response }}
   </div>
 
+      <div class="mb-3">
   {% for format in formats %}
 <div class="form-check">
     <input class="form-check-input" type="radio" name="format" id="format{{ format.name }}" value="{{ format.name }}">
     <label class="form-check-label" for="format{{ format.name }}">{{ format.desc }}</label>
 </div>
 {% endfor %}
-
+      </div>
   <button id="copy-button" onclick="copyToClipboard()">Copy to Clipboard</button>
   <a href="{{ url_for('index') }}">Back</a>
 </div>
