@@ -338,7 +338,7 @@ def start():
                 task = AsyncResult(task_id)
                 print("Async Task created")
 
-                return redirect(url_for('taskstatus'))
+                return redirect(url_for('result'))
 
 
 
@@ -426,7 +426,24 @@ def response():
         return render_template("response.html", response=chatgpt_response, chat_request=chat_request, topic=topic, model=model)
 
 
+@app.route('/api/tasks/<task_id>', methods=['GET'])
+def get_task_status(task_id):
+    # Retrieve the task status or result using the provided task_id
+    task_result = retrieve_task_result(task_id)
 
+    # Check if the task_result exists
+    if task_result is not None:
+        # Task is completed, return the result
+        return jsonify({'status': 'SUCCESS', 'result': task_result})
+    else:
+        # Task is still in progress or does not exist
+        return jsonify({'status': 'PENDING'})
+
+
+@app.route("/results")
+@login_required
+def results():
+        return render_template("results.html")
 
 
 @app.route("/admin")
