@@ -434,10 +434,10 @@ def get_task_status(task_id):
     # Check if the task_result exists
     if task_result is not None:
         # Task is completed, return the result
-        return task_result
+        return {'status': 'SUCCESS', 'result': task_result}
     else:
         # Task is still in progress or does not exist
-        return jsonify({'status': 'PENDING'})
+        return {'status': 'PENDING'}
 
 
 @app.route("/results")
