@@ -70,6 +70,7 @@ class ChatRequest(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     user = db.relationship('User', backref='chat_requests') 
     prompt = db.Column(db.Text, nullable=False)
+    format = db.Column(db.String(25), nullable=False)
     topic = db.Column(db.String(250), nullable=True)
     engine = db.Column(db.String(50), nullable=False)
     chatgpt_response = db.Column(db.Text, nullable=False)
@@ -278,22 +279,23 @@ def start():
             if format_row is not None:
                  output = format_row.desc
                  guideline = format_row.guideline
-                 final_prompt += ", The message should be in the form of " + output
-                 final_prompt += ". As much as possible, use the following guidelines for writing the message: " + guideline
+                 final_output = ", The message should be in the form of " + output
+                 final_output += ". As much as possible, use the following guidelines for writing the message: " + guideline
 
 
             #select the model
             model = request.form["model"]
 
+            full_prompt = final_prompt + " " + final_output
 
             try:
-                response = send_request_to_chatgpt(final_prompt, model)  # Use the desired engine
+                response = send_request_to_chatgpt(full_prompt, model)  # Use the desired engine
             except Timeout:
                 flash("The request to the ChatGPT service timed out. Please try again.")
                 return redirect(url_for("start"))
 
             if response["success"]:
-                    chat_request = ChatRequest(user_id=current_user.id, prompt=final_prompt, engine="gpt-3.5-turbo", chatgpt_response=response["response"], topic=topic, timestamp=datetime.datetime.utcnow())
+                    chat_request = ChatRequest(user_id=current_user.id, prompt=final_prompt, engine="gpt-3.5-turbo", chatgpt_response=response["response"], format=format, topic=topic, timestamp=datetime.datetime.utcnow())
                     db.session.add(chat_request)
                     db.session.commit()
 
@@ -301,6 +303,7 @@ def start():
                     session['chat_request'] = final_prompt
                     session['topic'] = topic
                     session['model'] = model
+                    session['format'] = format
                     session['chatgpt_response'] = response["response"]
 
                     return redirect(url_for("response"))
@@ -356,8 +359,9 @@ def reload_response(chat_request_id):
         chatgpt_response = chat_reload.chatgpt_response
         topic = chat_reload.topic
         model = chat_reload.engine
+        format = chat_reload.format
         # Redirect to the response route
-        return render_template("response.html", response=chatgpt_response, chat_request=chat_request, topic=topic, model=model)
+        return render_template("response.html", response=chatgpt_response, chat_request=chat_request, topic=topic, model=model, format=format)
     else:
         flash("Chat request not found.")
         return redirect(url_for("chat_history"))
@@ -369,7 +373,8 @@ def response():
     chat_request = session.get('chat_request')
     topic = session.get('topic')
     model = session.get('model')
-    return render_template("response.html", response=chatgpt_response, chat_request=chat_request, topic=topic, model=model)
+    format = session.get('format')
+    return render_template("response.html", response=chatgpt_response, chat_request=chat_request, topic=topic, format=format, model=model)
 
 @app.route("/admin")
 @login_required
