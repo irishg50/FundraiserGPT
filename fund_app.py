@@ -361,7 +361,12 @@ def reload_response(chat_request_id):
         model = chat_reload.engine
         format = chat_reload.format
         # Redirect to the response route
-        return render_template("response.html", response=chatgpt_response, chat_request=chat_request, topic=topic, model=model, format=format)
+
+        # Fetch all rows from the Formats table
+        formats = Formats.query.all()
+
+        return render_template("response.html", response=chatgpt_response, chat_request=chat_request, topic=topic,
+                               format=format, formats=formats, model=model)
     else:
         flash("Chat request not found.")
         return redirect(url_for("chat_history"))
