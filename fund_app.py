@@ -81,13 +81,13 @@ def add_header(response):
     return response
 
 
-@celery.task(bind=True)
+@celery.task()
 def send_request_to_chatgpt_task(self, final_prompt, model):
     try:
         response = send_request_to_chatgpt(final_prompt, model)  # Use the desired engine
-        return jsonify(response)
+        return response
     except Exception as e:
-        self.retry(exc=e, countdown=60, max_retries=3)
+        self.retry(exc=e, countdown=120, max_retries=3)
 
 
 @login_manager.user_loader
@@ -338,21 +338,8 @@ def start():
                 task = AsyncResult(task_id)
                 print("Async Task created")
 
-                while task.state not in ['SUCCESS', 'FAILURE']:
-                    print(f"Task state is: {task.state}")
-                    # Wait for a short interval before checking the task status again
-                    sleep(3)
+                return redirect(url_for('taskstatus'))
 
-                if task.state == 'SUCCESS':
-                    return redirect(url_for('response'))
-
-                # If the task fails, you can redirect or render an error template
-                if task.state == 'FAILURE':
-                    response = {
-                        'state': task.state,
-                        'status': str(task.info),  # this is the result you updated from `send_request_to_chatgpt_task`
-                    }
-                    return jsonify(response)
 
 
             except Exception as e:
@@ -461,42 +448,26 @@ def admin():
 @app.route('/status')
 @login_required
 def taskstatus():
+
     task_id = session.get('task_id')
     print(f"Task ID retrieved from session: {task_id}")
     task = send_request_to_chatgpt_task.AsyncResult(task_id)
-    if task.state == 'PENDING':
-        response = {
-            'state': task.state,
-            'status': 'Task is still pending',
-        }
-    elif task.state == 'SUCCESS':
-        if task.result is not None:
-            response = {
-                'state': task.state,
-                'status': 'Task completed successfully',
-                'result': task.result,
-            }
-        else:
-            response = {
-                'state': task.state,
-                'status': 'Task completed but no result available yet',
-            }
-    elif task.state != 'FAILURE':
-        response = {
-            'state': task.state,
-            'status': str(task.info),  # this is the result you returned from `send_request_to_chatgpt_task`
-        }
-        if 'result' in task.info:
-            response['result'] = task.info['result']
-    else:
-        # something went wrong in the background job
-        response = {
-            'state': task.state,
-            'status': str(task.info),  # this is the exception raised
-        }
-    return jsonify(response)
 
+    while task.state not in ['SUCCESS', 'FAILURE']:
+        print(f"Task state is: {task.state}")
+        # Wait for a short interval before checking the task status again
+        sleep(3)
 
+    if task.state == 'SUCCESS':
+        return redirect(url_for('response'))
+
+    # If the task fails, you can redirect or render an error template
+    if task.state == 'FAILURE':
+        response = {
+            'state': task.state,
+            'status': str(task.info),  # this is the result you updated from `send_request_to_chatgpt_task`
+        }
+        return jsonify(response)
 
 
 if __name__ == "__main__":
