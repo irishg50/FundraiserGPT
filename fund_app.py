@@ -338,7 +338,7 @@ def start():
                 task = AsyncResult(task_id)
                 print("Async Task created")
 
-                return redirect(url_for('result'))
+                return redirect(url_for('results'))
 
 
 
