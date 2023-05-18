@@ -429,7 +429,7 @@ def response():
 @app.route('/api/tasks/<task_id>', methods=['GET'])
 def get_task_status(task_id):
     # Retrieve the task status or result using the provided task_id
-    task_result = retrieve_task_result(task_id)
+    task_result = AsyncResult(task_id)
 
     # Check if the task_result exists
     if task_result is not None:
