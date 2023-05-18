@@ -374,7 +374,11 @@ def response():
     topic = session.get('topic')
     model = session.get('model')
     format = session.get('format')
-    return render_template("response.html", response=chatgpt_response, chat_request=chat_request, topic=topic, format=format, model=model)
+
+    # Fetch all rows from the Formats table
+    formats = Formats.query.all()
+
+    return render_template("response.html", response=chatgpt_response, chat_request=chat_request, topic=topic, format=format, formats=formats, model=model)
 
 @app.route("/admin")
 @login_required

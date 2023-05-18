@@ -6,6 +6,14 @@
   <div id="response-display" class="mb-3" style="white-space: pre-wrap; word-wrap: break-word;">
     {{ response }}
   </div>
+
+  {% for format in formats %}
+<div class="form-check">
+    <input class="form-check-input" type="radio" name="format" id="format{{ format.name }}" value="{{ format.name }}">
+    <label class="form-check-label" for="format{{ format.name }}">{{ format.desc }}</label>
+</div>
+{% endfor %}
+
   <button id="copy-button" onclick="copyToClipboard()">Copy to Clipboard</button>
   <a href="{{ url_for('index') }}">Back</a>
 </div>
@@ -18,7 +26,8 @@
     </div>
     <input type="hidden" name="chat_request" value="{{ chat_request }}">
     <input type="hidden" name="topic" value="{{ topic }}">
-    <input type="hidden" name="model" value="{{ engine }}">
+    <input type="hidden" name="model" value="{{ model }}">
+    <input type="hidden" name="format" value="{{ format }}">
          <!-- Hidden input field to store previous chat request -->
     <button type="submit" class="btn btn-primary">Regenerate</button>
     <div id="loading-spinner" class="spinner-border text-primary" role="status" style="display:none;">
