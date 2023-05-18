@@ -434,10 +434,22 @@ def get_task_status(task_id):
     # Check if the task_result exists
     if task_result is not None:
         # Task is completed, return the result
-        return {'status': 'SUCCESS', 'result': task_result}
+
+        if isinstance(task_result, AsyncResult):
+            # Extract relevant information from AsyncResult and convert it to a dictionary
+            result_dict = {
+                'task_id': task_id,
+                'status': task_result.status,
+                'result': task_result.result,
+                # Add any other relevant information from the AsyncResult object
+            }
+
+            # Return the dictionary as a JSON response
+            return jsonify(result_dict)
+
     else:
         # Task is still in progress or does not exist
-        return {'status': 'PENDING'}
+        return jsonify({'status': 'PENDING'})
 
 
 @app.route("/results")
