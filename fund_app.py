@@ -350,12 +350,12 @@ def continue_conversation():
 @login_required
 def reload_response(chat_request_id):
     # Retrieve the ChatRequest record based on the provided id
-    chat_request = ChatRequest.query.filter_by(id=chat_request_id).first()
-    if chat_request:
-        chat_request = chat_request.prompt
-        chatgpt_response = chat_request.chatgpt_response
-        topic = chat_request.topic
-        model = chat_request.engine
+    chat_reload = ChatRequest.query.filter_by(id=chat_request_id).first()
+    if chat_reload:
+        chat_request = chat_reload.prompt
+        chatgpt_response = chat_reload.chatgpt_response
+        topic = chat_reload.topic
+        model = chat_reload.engine
         # Redirect to the response route
         return render_template("response.html", response=chatgpt_response, chat_request=chat_request, topic=topic, model=model)
     else:
