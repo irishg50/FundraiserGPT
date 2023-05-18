@@ -82,7 +82,7 @@ def add_header(response):
 
 
 @celery.task()
-def send_request_to_chatgpt_task(self, final_prompt, model):
+def send_request_to_chatgpt_task(final_prompt, model):
     try:
         response = send_request_to_chatgpt(final_prompt, model)  # Use the desired engine
         return response
