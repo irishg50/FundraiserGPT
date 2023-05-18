@@ -10,7 +10,7 @@
       <div class="mb-3">
   {% for format in formats %}
 <div class="form-check">
-    <input class="form-check-input" type="radio" name="format" id="format{{ format.name }}" value="{{ format.name }}">
+    <input class="form-check-input" type="radio" name="format" id="format{{ format.name }}" value="{{ format.name }}" {% if format == format.name %} selected{% endif %}>
     <label class="form-check-label" for="format{{ format.name }}">{{ format.desc }}</label>
 </div>
 {% endfor %}
