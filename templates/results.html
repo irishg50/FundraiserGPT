@@ -8,11 +8,11 @@ function fetchTaskResult(taskId) {
     .then(response => response.json())
     .then(data => {
       if (data.status === 'SUCCESS') {
-        const message = { text: 'Hello, world!' };
-        messageElement.textContent = message.text;
+          const message = 'Hello, world!';
+          message.textContent = message;
         // Task result is available, display it on the web page
-        const resultDiv = document.getElementById('result');
-        resultDiv.textContent = data.result;
+        const result = document.getElementById('resultDiv');
+        result.textContent = data.result;
       } else {
         // Task result is still pending, continue checking after a delay
         setTimeout(() => fetchTaskResult(taskId), 3000); // Check again after 5 seconds
