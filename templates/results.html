@@ -10,7 +10,7 @@ function fetchTaskResult(taskId) {
       if (data.status === 'SUCCESS') {
         // Task result is available, display it on the web page
         const resultDiv = document.getElementById('result');
-        resultDiv.innerText = data.result;
+        resultDiv.textContent = data.result;
       } else {
         // Task result is still pending, continue checking after a delay
         setTimeout(() => fetchTaskResult(taskId), 3000); // Check again after 5 seconds
@@ -21,8 +21,11 @@ function fetchTaskResult(taskId) {
     });
 }
 
-// Call the function to fetch the task result for a specific task ID
+document.addEventListener('DOMContentLoaded', function() {
+  // Call the function to fetch the task result for a specific task ID
 fetchTaskResult('{{ task_id }}');
+});
+
   </script>
 
 <div class="container" style="background-color:#fff;">
