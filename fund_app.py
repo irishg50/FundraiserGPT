@@ -341,7 +341,7 @@ def start():
                 while task.state not in ['SUCCESS', 'FAILURE']:
                     print(f"Task state is: {task.state}")
                     # Wait for a short interval before checking the task status again
-                    sleep(1)
+                    sleep(3)
 
                 if task.state == 'SUCCESS':
                     return redirect(url_for('response'))
