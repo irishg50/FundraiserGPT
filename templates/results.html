@@ -8,9 +8,8 @@ function fetchTaskResult(taskId) {
     .then(response => response.json())
     .then(data => {
       if (data.status === 'SUCCESS') {
-          const messageElement = document.getElementById('message');
-          const message = 'Hello, world!';
-          message.textContent = message;
+        const message = { text: 'Hello, world!' };
+        messageElement.textContent = message.text;
         // Task result is available, display it on the web page
         const resultDiv = document.getElementById('result');
         resultDiv.textContent = data.result;
@@ -32,7 +31,7 @@ fetchTaskResult('{{ task_id }}');
 
 <div id="message"></div>
 
-<div id="result"></div>
+<div id="resultDiv"></div>
 
 {% endblock %}
 
