@@ -50,6 +50,9 @@ function fetchTaskResult(taskId) {
 
         resultElement.textContent = resultData.response;
 
+        var divElement = document.getElementById('copyButton');
+        divElement.style.display = 'block'; // Change display property to 'block' for visibility
+
         responseValue = resultData.response;
         callFlaskSave(responseValue);
 
@@ -74,6 +77,24 @@ fetchTaskResult('{{ task_id }}');
 <pre>
   <div id="resultDiv"></div>
 </pre>
+<div id="copyButton" style="display: none;">
+      <button id="copy-button" onclick="copyToClipboard()">Copy to Clipboard</button>
+  <a href="{{ url_for('index') }}">Back</a>
+   </div>
+
+<script>
+function copyToClipboard() {
+  var responseElement = document.getElementById("response-display");
+  var textarea = document.createElement("textarea");
+  textarea.value = responseElement.textContent;
+  document.body.appendChild(textarea);
+  textarea.select();
+  document.execCommand("copy");
+  document.body.removeChild(textarea);
+  alert("Text copied to clipboard!");
+}
+</script>
+
 
 {% endblock %}
 
