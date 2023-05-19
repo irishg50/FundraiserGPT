@@ -116,6 +116,7 @@ class ChatRequest(db.Model):
     user = db.relationship('User', backref='chat_requests') 
     prompt = db.Column(db.Text, nullable=False)
     topic = db.Column(db.String(250), nullable=True)
+    format = db.Column(db.String(25), nullable=True)
     engine = db.Column(db.String(50), nullable=False)
     chatgpt_response = db.Column(db.Text, nullable=False)
     timestamp = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow)
