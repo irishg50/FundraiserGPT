@@ -84,15 +84,6 @@ fetchTaskResult('{{ task_id }}');
   <a href="{{ url_for('index') }}">Back</a>
    </div>
 
-    {% formats = Formats.query.all() %}
-
-<div class="form-check" id="formatType" style="display: none;">
-    {% for format_type in formats %}
-    <input class="form-check-input" type="radio" name="format" id="format{{ format_type.name }}" value="{{ format_type.name }}" {% if format == format_type.name %} checked{% endif %}>
-    <label class="form-check-label" for="format{{ format_type.name }}">{{ format_type.desc }}</label>
-    {% endfor %}
-</div>
-
 
 <script>
 function copyToClipboard() {

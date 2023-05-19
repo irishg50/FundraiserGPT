@@ -480,9 +480,8 @@ def get_task_status(task_id):
 @login_required
 def results():
         task_id = session.get('task_id')
-        formats = Formats.query.all()
-        formats_data = [{'name': format.name, 'desc': format.desc} for format in formats]
-        return render_template("results.html", task_id=task_id, formats = formats_data)
+        format = session.get('format')
+        return render_template("results.html", task_id=task_id, format = format)
 
 
 @app.route("/admin")
