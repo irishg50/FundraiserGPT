@@ -35,7 +35,7 @@ function fetchTaskResult(taskId) {
       if (data.status === 'SUCCESS') {
 
         var loadingElement = document.getElementById('loadingBody');
-        loadingElement.style.display = 'nonoe'; // Change display property to 'block' for visibility
+        loadingElement.style.display = 'none'; // Change display property to 'block' for visibility
         var bodyElement = document.getElementById('resultBody');
         bodyElement.style.display = 'block'; // Change display property to 'block' for visibility
 
