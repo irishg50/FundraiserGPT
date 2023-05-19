@@ -425,7 +425,7 @@ def response():
         # Render the template once the task is successful
         return render_template("response.html", response=chatgpt_response, chat_request=chat_request, topic=topic, model=model)
 
-@app.route("/save_chat_response")
+@app.route('/save_chat_response', methods=['POST'])
 @login_required
 def save_chat_response(responseValue):
     print("Save Chat Response called")
