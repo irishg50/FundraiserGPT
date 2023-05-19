@@ -429,7 +429,9 @@ def response():
 @login_required
 def save_chat_response(responseValue):
     print("Save Chat Response called")
-    chatgpt_response = responseValue
+    data = request.get_json()
+    chatgpt_response = data.get('responseValue')
+
     final_prompt = session.get('final_prompt')
     topic = session.get('topic')
     model = session.get('model')
