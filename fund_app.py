@@ -427,7 +427,7 @@ def response():
 
 @app.route('/save_chat_response', methods=['POST'])
 @login_required
-def save_chat_response(responseValue):
+def save_chat_response():
     print("Save Chat Response called")
     data = request.get_json()
     chatgpt_response = data.get('responseValue')
