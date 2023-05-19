@@ -84,7 +84,7 @@ fetchTaskResult('{{ task_id }}');
 
 <script>
 function copyToClipboard() {
-  var responseElement = document.getElementById("response-display");
+  var responseElement = document.getElementById("resultDiv");
   var textarea = document.createElement("textarea");
   textarea.value = responseElement.textContent;
   document.body.appendChild(textarea);
