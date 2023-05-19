@@ -44,13 +44,15 @@ function fetchTaskResult(taskId) {
 
         // Task result is available, display it on the web page
         const resultElement = document.getElementById('resultDiv');
-        const jsonString = JSON.stringify(data.result);
+        //const jsonString = JSON.stringify(data.result);
+        const resultData = JSON.parse(jsonString);
+        //const responseValue = resultdata.response;
         resultElement.textContent = resultData.response;
 
         // Example usage: Pass the value of data.response to the callFlaskRoute() function
-        //const resultData = JSON.parse(jsonString);
-        const responseValue = resultdata.response;
-        callFlaskSave(responseValue);
+
+
+        //callFlaskSave(responseValue);
 
       } else {
         // Task result is still pending, continue checking after a delay
