@@ -428,6 +428,7 @@ def response():
 @app.route("/save_chat_response")
 @login_required
 def save_chat_response(responseValue):
+    print("Save Chat Response called")
     chatgpt_response = responseValue
     final_prompt = session.get('final_prompt')
     topic = session.get('topic')
