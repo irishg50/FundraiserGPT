@@ -11,21 +11,22 @@
 
      <script>
 function callFlaskSave(responseValue) {
-    fetch('/save_chat_response', {
+  console.log('callFlaskSave function called'); // Print statement
+
+  fetch('/save_chat_response', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({ response: responseValue })
-    })
-    .then(() => {
+  })
+  .then(() => {
     // Request sent successfully, background process initiated
-    })
-    .catch(error => {
-        console.error('Error occurred while calling Flask route:', error);
-    });
+  })
+  .catch(error => {
+    console.error('Error occurred while calling Flask route:', error);
+  });
 }
-
 
 function fetchTaskResult(taskId) {
   fetch('/api/tasks/' + taskId)
