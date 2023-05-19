@@ -10,7 +10,7 @@
 </style>
 
      <script>
-function callFlaskRoute(responseValue) {
+function callFlaskSave(responseValue) {
   fetch('/save_chat_response', {
     method: 'POST',
     headers: {
@@ -49,6 +49,8 @@ function fetchTaskResult(taskId) {
 
         resultElement.textContent = resultData.response;
 
+        responseValue = resultData.response;
+        callFlaskSave(responseValue);
 
       } else {
         // Task result is still pending, continue checking after a delay
