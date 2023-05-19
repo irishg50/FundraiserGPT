@@ -344,9 +344,9 @@ def start():
 
                 # Fetch all rows from the Formats table
                 formats = Formats.query.all()
+                session['formats'] = formats
 
-                return redirect(url_for('results', formats))
-
+                return redirect(url_for('results'))
 
 
             except Exception as e:
@@ -480,7 +480,8 @@ def get_task_status(task_id):
 @login_required
 def results():
         task_id = session.get('task_id')
-        return render_template("results.html", task_id=task_id)
+        formats = session.get('formats')
+        return render_template("results.html", task_id=task_id, formats = formats)
 
 
 @app.route("/admin")
