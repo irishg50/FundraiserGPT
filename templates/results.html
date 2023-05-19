@@ -10,11 +10,32 @@
 </style>
 
      <script>
+function callFlaskSave(responseValue) {
+  fetch('/save_chat_response', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ response: responseValue })
+  })
+  .then(() => {
+    // Request sent successfully, background process initiated
+  })
+  .catch(error => {
+    console.error('Error occurred while calling Flask route:', error);
+  });
+}
+
+
 function fetchTaskResult(taskId) {
   fetch('/api/tasks/' + taskId)
     .then(response => response.json())
     .then(data => {
       if (data.status === 'SUCCESS') {
+
+       //Task completed successfully, save the chat reqeust and response
+
+
 
         var spinner = document.getElementById("loading-spinner");
         if (spinner) {
@@ -24,7 +45,12 @@ function fetchTaskResult(taskId) {
         // Task result is available, display it on the web page
         const resultElement = document.getElementById('resultDiv');
         const jsonString = JSON.stringify(data.result);
+
+        // Example usage: Pass the value of data.response to the callFlaskRoute() function
+
         const resultData = JSON.parse(jsonString);
+        const responseValue = resultdata.response;
+        callFlaskSave(responseValue);
 
         resultElement.textContent = resultData.response;
 

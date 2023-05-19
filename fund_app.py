@@ -425,6 +425,19 @@ def response():
         # Render the template once the task is successful
         return render_template("response.html", response=chatgpt_response, chat_request=chat_request, topic=topic, model=model)
 
+@app.route("/save_chat_response")
+@login_required
+def save_chat_response(responseValue):
+    chatgpt_response = responseValue
+    final_prompt = session.get('final_prompt')
+    topic = session.get('topic')
+    model = session.get('model')
+    format = session.get('format')
+
+    chat_request = ChatRequest(user_id=current_user.id, prompt=final_prompt, engine="gpt-3.5-turbo", chatgpt_response=chatgpt_response, topic=topic, timestamp=datetime.datetime.utcnow(), format=format)
+    db.session.add(chat_request)
+    db.session.commit()
+
 
 @app.route('/api/tasks/<task_id>', methods=['GET'])
 def get_task_status(task_id):
