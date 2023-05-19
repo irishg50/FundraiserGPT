@@ -429,7 +429,7 @@ def response():
 @app.route('/save_chat_response', methods=['POST'])
 @login_required
 def save_chat_response():
-    print("Save Chat Response called")
+
     data = request.get_json()
     chatgpt_response = data.get('responseValue')
 
@@ -442,6 +442,7 @@ def save_chat_response():
     db.session.add(chat_request)
     db.session.commit()
 
+    return jsonify({"success": True})
 
 @app.route('/api/tasks/<task_id>', methods=['GET'])
 def get_task_status(task_id):

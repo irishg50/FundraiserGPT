@@ -18,7 +18,7 @@ function callFlaskSave(responseValue) {
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ response: responseValue })
+    body: JSON.stringify({ responseValue: responseValue })
   })
   .then(() => {
     // Request sent successfully, background process initiated
