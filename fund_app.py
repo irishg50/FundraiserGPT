@@ -358,7 +358,6 @@ def start():
 
     # Fetch all rows from the Formats table
     formats = Formats.query.all()
-
     # Create a list of dictionaries representing each row in the formats table
     format_data = []
     for format_row in formats:
@@ -490,6 +489,7 @@ def results():
         task_id = session.get('task_id')
         format = session.get('format')
         # Create a list of dictionaries representing each row in the formats table
+        formats = Formats.query.all()
         format_data = []
         for format_row in formats:
             format_dict = {
@@ -500,7 +500,7 @@ def results():
             format_data.append(format_dict)
 
         session['format_data'] = format_data
-        
+
         return render_template("results.html", task_id=task_id, format = format, formats=format_data)
 
 
