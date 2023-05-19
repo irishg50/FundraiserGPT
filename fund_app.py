@@ -319,19 +319,22 @@ def start():
             if format_row is not None:
                  output = format_row.desc
                  guideline = format_row.guideline
-                 final_prompt += ", The message should be in the form of " + output
-                 final_prompt += ". As much as possible, use the following guidelines for writing the message: " + guideline
+                 final_output = ", The message should be in the form of " + output
+                 final_output += ". As much as possible, use the following guidelines for writing the message: " + guideline
 
             #select the model
             model = request.form["model"]
 
+            full_prompt = final_prompt + " " + final_output
+
             try:
-                task = send_request_to_chatgpt_task.apply_async(args=[final_prompt, model])
+                task = send_request_to_chatgpt_task.apply_async(args=[full_prompt, model])
                 print(f"Task created with ID: {task.id}")
                 session['task_id'] = task.id
                 session['final_prompt'] = final_prompt
                 session['topic'] = topic
                 session['model'] = model
+                session['format'] = format
                 print(f"Task ID stored in session: {session.get('task_id')}")
 
                 task_id = session.get('task_id')
