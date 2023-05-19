@@ -342,7 +342,10 @@ def start():
                 task = AsyncResult(task_id)
                 print("Async Task created")
 
-                return redirect(url_for('results'))
+                # Fetch all rows from the Formats table
+                formats = Formats.query.all()
+
+                return redirect(url_for('results', formats))
 
 
 
