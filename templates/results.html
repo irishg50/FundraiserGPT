@@ -34,9 +34,10 @@ function fetchTaskResult(taskId) {
     .then(data => {
       if (data.status === 'SUCCESS') {
 
-       //Task completed successfully, save the chat reqeust and response
-
-
+        var loadingElement = document.getElementById('loadingBody');
+        loadingElement.style.display = 'nonoe'; // Change display property to 'block' for visibility
+        var bodyElement = document.getElementById('resultBody');
+        bodyElement.style.display = 'block'; // Change display property to 'block' for visibility
 
         var spinner = document.getElementById("loading-spinner");
         if (spinner) {
@@ -72,18 +73,22 @@ function fetchTaskResult(taskId) {
 fetchTaskResult('{{ task_id }}');
 
   </script>
-
+<div id="loadingBody">
 <div id="loading-spinner" class="spinner-border text-primary" role="status" style="display:inline-block;">
   <span class="sr-only">.</span>
 </div>
-<pre>
+<p>Loading ... (this could take a while)</p>
+</div>
+<div id="resultBody"  style="display:none">
+<p>Done! Here is your result.</p>
+    <pre>
   <div id="resultDiv"></div>
 </pre>
 <div id="copyButton" style="display: none;">
       <button id="copy-button" onclick="copyToClipboard()">Copy to Clipboard</button>
   <a href="{{ url_for('index') }}">Back</a>
    </div>
-
+</div>
 
 <script>
 function copyToClipboard() {
