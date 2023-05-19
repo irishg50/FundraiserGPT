@@ -342,10 +342,6 @@ def start():
                 task = AsyncResult(task_id)
                 print("Async Task created")
 
-                # Fetch all rows from the Formats table
-                formats = Formats.query.all()
-                session['formats'] = formats
-
                 return redirect(url_for('results'))
 
 
@@ -363,7 +359,19 @@ def start():
     # Fetch all rows from the Formats table
     formats = Formats.query.all()
 
-    return render_template("start.html", org_name=current_user.org_name, user_class=current_user.user_class, formats=formats)
+    # Create a list of dictionaries representing each row in the formats table
+    format_data = []
+    for format_row in formats:
+        format_dict = {
+            "name": format_row.name,
+            "desc": format_row.desc,
+            "guideline": format_row.guideline
+        }
+        format_data.append(format_dict)
+
+    session['format_data'] = format_data
+
+    return render_template("start.html", org_name=current_user.org_name, user_class=current_user.user_class, formats=format_data)
 
 @app.route("/continue_conversation", methods=["POST"])
 @login_required
@@ -481,7 +489,19 @@ def get_task_status(task_id):
 def results():
         task_id = session.get('task_id')
         format = session.get('format')
-        return render_template("results.html", task_id=task_id, format = format)
+        # Create a list of dictionaries representing each row in the formats table
+        format_data = []
+        for format_row in formats:
+            format_dict = {
+                "name": format_row.name,
+                "desc": format_row.desc,
+                "guideline": format_row.guideline
+            }
+            format_data.append(format_dict)
+
+        session['format_data'] = format_data
+        
+        return render_template("results.html", task_id=task_id, format = format, formats=format_data)
 
 
 @app.route("/admin")
