@@ -409,8 +409,9 @@ def reload_response(chat_request_id):
         session['chatgpt_response'] = chat_request.chatgpt_response
         session['topic'] = chat_request.topic
         session['model'] = chat_request.engine
+        session['format'] = chat_request.format
         # Redirect to the response route
-        return redirect(url_for("response"))
+        return redirect(url_for("results"))
     else:
         flash("Chat request not found.")
         return redirect(url_for("chat_history"))
