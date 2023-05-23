@@ -81,13 +81,13 @@ def add_header(response):
     return response
 
 
-@celery.task()
-def send_request_to_chatgpt_task(final_prompt, model):
+@celery.task(bind=True)
+def send_request_to_chatgpt_task(self, final_prompt, model):
     try:
         response = send_request_to_chatgpt(final_prompt, model)  # Use the desired engine
-        return response
+        return jsonify(response)
     except Exception as e:
-        self.retry(exc=e, countdown=120, max_retries=3)
+        self.retry(exc=e, countdown=60, max_retries=3)
 
 
 @login_manager.user_loader
@@ -115,11 +115,9 @@ class ChatRequest(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     user = db.relationship('User', backref='chat_requests') 
     prompt = db.Column(db.Text, nullable=False)
-    format = db.Column(db.String(25), nullable=False)
     topic = db.Column(db.String(250), nullable=True)
-    format = db.Column(db.String(25), nullable=True)
     engine = db.Column(db.String(50), nullable=False)
-    chatgpt_response = db.Column(db.Text, nullable=True)
+    chatgpt_response = db.Column(db.Text, nullable=False)
     timestamp = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow)
 
     def __repr__(self):
@@ -317,42 +315,28 @@ def start():
 
             format_row = Formats.query.filter_by(name=format).first()
 
-            final_output = ""
-
             if format_row is not None:
                  output = format_row.desc
                  guideline = format_row.guideline
-                 final_output = ", The message should be in the form of " + output
-                 final_output += ". As much as possible, use the following guidelines for writing the message: " + guideline
-
+                 final_prompt += ", The message should be in the form of " + output
+                 final_prompt += ". As much as possible, use the following guidelines for writing the message: " + guideline
 
             #select the model
             model = request.form["model"]
 
-            full_prompt = final_prompt + " " + final_output
-
             try:
-                task = send_request_to_chatgpt_task.apply_async(args=[full_prompt, model])
+                task = send_request_to_chatgpt_task.apply_async(args=[final_prompt, model])
                 print(f"Task created with ID: {task.id}")
                 session['task_id'] = task.id
                 session['final_prompt'] = final_prompt
                 session['topic'] = topic
                 session['model'] = model
-                session['format'] = format
                 print(f"Task ID stored in session: {session.get('task_id')}")
-
-                task_id = session.get('task_id')
-
-                task = AsyncResult(task_id)
-                print("Async Task created")
-
-                return redirect(url_for('results'))
-
+                return redirect(url_for('response'))            
 
             except Exception as e:
                 print("Exception:", e)
                 return make_response(jsonify({"error": "Internal Server Error1"}), 500)
-
 
         except ValueError as ve:
             print("ValueError:", ve)
@@ -363,19 +347,8 @@ def start():
 
     # Fetch all rows from the Formats table
     formats = Formats.query.all()
-    # Create a list of dictionaries representing each row in the formats table
-    format_data = []
-    for format_row in formats:
-        format_dict = {
-            "name": format_row.name,
-            "desc": format_row.desc,
-            "guideline": format_row.guideline
-        }
-        format_data.append(format_dict)
 
-    session['format_data'] = format_data
-
-    return render_template("start.html", org_name=current_user.org_name, user_class=current_user.user_class, formats=format_data)
+    return render_template("start.html", org_name=current_user.org_name, user_class=current_user.user_class, formats=formats)
 
 @app.route("/continue_conversation", methods=["POST"])
 @login_required
@@ -414,9 +387,8 @@ def reload_response(chat_request_id):
         session['chatgpt_response'] = chat_request.chatgpt_response
         session['topic'] = chat_request.topic
         session['model'] = chat_request.engine
-        session['format'] = chat_request.format
         # Redirect to the response route
-        return redirect(url_for("results"))
+        return redirect(url_for("response"))
     else:
         flash("Chat request not found.")
         return redirect(url_for("chat_history"))
@@ -425,9 +397,16 @@ def reload_response(chat_request_id):
 @app.route("/response")
 @login_required
 def response():
-        task_id = session.get('task_id')
-        print(f"Task ID retrieved from session: {task_id}")
+    chatgpt_response = ""
+    task_id = session.get('task_id')
+    print(f"Task ID retrieved from session: {task_id}")
+    task = AsyncResult(task_id)
 
+    while task.state not in ['SUCCESS', 'FAILURE']:
+        # Wait for a short interval before checking the task status again
+        sleep(1)
+
+    if task.state == 'SUCCESS':
         response = task.get()
         chatgpt_response = response["response"]
 
@@ -445,70 +424,14 @@ def response():
         # Render the template once the task is successful
         return render_template("response.html", response=chatgpt_response, chat_request=chat_request, topic=topic, model=model)
 
-@app.route('/save_chat_response', methods=['POST'])
-@login_required
-def save_chat_response():
+    # If the task fails, you can redirect or render an error template
+    if task.state == 'FAILURE':
+        response = {
+            'state': task.state,
+            'status': str(task.info),  # this is the result you updated from `send_request_to_chatgpt_task`
+        }
+        return jsonify(response)
 
-    data = request.get_json()
-    chatgpt_response = data.get('responseValue')
-
-    final_prompt = session.get('final_prompt')
-    topic = session.get('topic')
-    model = session.get('model')
-    format = session.get('format')
-
-
-    chat_request = ChatRequest(user_id=current_user.id, prompt=final_prompt, engine="gpt-3.5-turbo", chatgpt_response=chatgpt_response, topic=topic, timestamp=datetime.datetime.utcnow(), format=format)
-    db.session.add(chat_request)
-    db.session.commit()
-
-    return jsonify({"success": True})
-
-@app.route('/api/tasks/<task_id>', methods=['GET'])
-def get_task_status(task_id):
-    # Retrieve the task status or result using the provided task_id
-    task_result = AsyncResult(task_id)
-
-    # Check if the task_result exists
-    if task_result is not None:
-        # Task is completed, return the result
-
-        if isinstance(task_result, AsyncResult):
-            # Extract relevant information from AsyncResult and convert it to a dictionary
-            result_dict = {
-                'task_id': task_id,
-                'status': task_result.status,
-                'result': task_result.result,
-                # Add any other relevant information from the AsyncResult object
-            }
-
-            # Return the dictionary as a JSON response
-            return jsonify(result_dict)
-
-    else:
-        # Task is still in progress or does not exist
-        return jsonify({'status': 'PENDING'})
-
-
-@app.route("/results")
-@login_required
-def results():
-        task_id = session.get('task_id')
-        format = session.get('format')
-        # Create a list of dictionaries representing each row in the formats table
-        formats = Formats.query.all()
-        format_data = []
-        for format_row in formats:
-            format_dict = {
-                "name": format_row.name,
-                "desc": format_row.desc,
-                "guideline": format_row.guideline
-            }
-            format_data.append(format_dict)
-
-        session['format_data'] = format_data
-
-        return render_template("results.html", task_id=task_id, format = format, formats=format_data)
 
 
 @app.route("/admin")
@@ -530,26 +453,42 @@ def admin():
 @app.route('/status')
 @login_required
 def taskstatus():
-
     task_id = session.get('task_id')
     print(f"Task ID retrieved from session: {task_id}")
     task = send_request_to_chatgpt_task.AsyncResult(task_id)
-
-    while task.state not in ['SUCCESS', 'FAILURE']:
-        print(f"Task state is: {task.state}")
-        # Wait for a short interval before checking the task status again
-        sleep(3)
-
-    if task.state == 'SUCCESS':
-        return redirect(url_for('response'))
-
-    # If the task fails, you can redirect or render an error template
-    if task.state == 'FAILURE':
+    if task.state == 'PENDING':
         response = {
             'state': task.state,
-            'status': str(task.info),  # this is the result you updated from `send_request_to_chatgpt_task`
+            'status': 'Task is still pending',
         }
-        return jsonify(response)
+    elif task.state == 'SUCCESS':
+        if task.result is not None:
+            response = {
+                'state': task.state,
+                'status': 'Task completed successfully',
+                'result': task.result,
+            }
+        else:
+            response = {
+                'state': task.state,
+                'status': 'Task completed but no result available yet',
+            }
+    elif task.state != 'FAILURE':
+        response = {
+            'state': task.state,
+            'status': str(task.info),  # this is the result you returned from `send_request_to_chatgpt_task`
+        }
+        if 'result' in task.info:
+            response['result'] = task.info['result']
+    else:
+        # something went wrong in the background job
+        response = {
+            'state': task.state,
+            'status': str(task.info),  # this is the exception raised
+        }
+    return jsonify(response)
+
+
 
 
 if __name__ == "__main__":
