@@ -496,14 +496,19 @@ def get_task_status(task_id):
 @login_required
 def result():
     chat_request_id = session.get("chat_request_id")
+    print(f"chat_request_id from session: {chat_request_id")
+
     chat_request = ChatRequest.query.get(chat_request_id)
     if chat_request:
+        print("Database data returned")
         # Store the necessary parameters in the session
         session['chat_request'] = chat_request.prompt
         session['chatgpt_response'] = chat_request.chatgpt_response
         session['topic'] = chat_request.topic
         session['model'] = chat_request.engine
         session['format'] = chat_request.format
+
+
 
         # Create a list of dictionaries representing each row in the formats table
         formats = Formats.query.all()
@@ -515,7 +520,7 @@ def result():
                 "guideline": format_row.guideline
             }
             format_data.append(format_dict)
-
+        print("formats retrieved")
         session['format_data'] = format_data
 
         return render_template("result.html", chat_request_id = chat_request_id)
