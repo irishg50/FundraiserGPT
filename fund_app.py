@@ -449,9 +449,14 @@ def response():
 @app.route('/save_chat_response', methods=['POST'])
 @login_required
 def save_chat_response():
-
     data = request.get_json()
     chatgpt_response = data.get('responseValue')
+
+    chatgpt_response_dict = json.loads(chatgpt_response)
+
+    # Access the 'response' value from the dictionary
+    chatgpt_response = chatgpt_response_dict['response']
+
 
     final_prompt = session.get('final_prompt')
     topic = session.get('topic')
@@ -509,8 +514,6 @@ def result():
         # Store the necessary parameters in the session
         chatgpt_response = chat_request.chatgpt_response
         format = chat_request.format
-
-
 
         # Create a list of dictionaries representing each row in the formats table
         formats = Formats.query.all()
