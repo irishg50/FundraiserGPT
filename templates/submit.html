@@ -34,13 +34,14 @@ function fetchTaskResult(taskId) {
     .then(data => {
       if (data.status === 'SUCCESS') {
 
-        // Task result is available, display it on the web page
-        const resultElement = document.getElementById('resultDiv');
+        // Task result is available, retireve the result
         const jsonString = JSON.stringify(data.result);
 
+        // Pass the result to save chat_request
         responseValue = jsonString;
         callFlaskSave(responseValue);
 
+        // redirect to /result
         window.location.href = '/result';
 
       } else {
@@ -63,42 +64,7 @@ fetchTaskResult('{{ task_id }}');
 </div>
 <p>Loading ... (this could take a while)</p>
 </div>
-<script>
 
-function fetchTaskResult(taskId) {
-  fetch('/api/tasks/' + taskId)
-    .then(response => response.json())
-    .then(data => {
-      if (data.status === 'SUCCESS') {
-
-
-        // Task result is available, display it on the web page
-        const resultElement = document.getElementById('resultDiv');
-        const jsonString = JSON.stringify(data.result);
-        const resultData = JSON.parse(jsonString);
-
-        resultElement.textContent = resultData.response;
-
-
-        responseValue = resultData.response;
-        callFlaskSave(responseValue);
-
-        window.location.href = '/result';
-
-      } else {
-        // Task result is still pending, continue checking after a delay
-        setTimeout(() => fetchTaskResult(taskId), 3000); // Check again after 5 seconds
-      }
-    })
-    .catch(error => {
-      console.error('Error occurred while fetching task result:', error);
-    });
-}
-
-  // Call the function to fetch the task result for a specific task ID
-fetchTaskResult('{{ task_id }}');
-
-  </script>
 
 
 {% endblock %}
