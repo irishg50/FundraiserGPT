@@ -63,7 +63,7 @@ fetchTaskResult('{{ task_id }}');
 </div>
 <p>Loading ... (this could take a while)</p>
 </div>
-
+<script>
 
 function fetchTaskResult(taskId) {
   fetch('/api/tasks/' + taskId)
@@ -82,6 +82,8 @@ function fetchTaskResult(taskId) {
 
         responseValue = resultData.response;
         callFlaskSave(responseValue);
+
+        window.location.href = '/result';
 
       } else {
         // Task result is still pending, continue checking after a delay
