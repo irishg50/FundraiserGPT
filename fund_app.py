@@ -10,6 +10,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash, jso
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, LoginManager, login_user, login_required, logout_user, current_user
 from flask_bcrypt import Bcrypt
+from flask import flash
 from flask_migrate import Migrate
 from dotenv import load_dotenv
 import os
@@ -465,6 +466,7 @@ def save_chat_response():
     new_chat_request_id = chat_request.id
     print(f"chat_request_id from databae: {new_chat_request_id}")
     session['chat_request_id'] = new_chat_request_id
+    flash("Chat request ID stored in session.")
 
     return jsonify({"success": True})
 
@@ -498,6 +500,7 @@ def get_task_status(task_id):
 @login_required
 def result():
     chat_request_id = session.get("chat_request_id")
+    flash("Retrieved chat request ID from session.")
     print(f"chat_request_id from session: {chat_request_id}")
 
     chat_request = ChatRequest.query.get(chat_request_id)
