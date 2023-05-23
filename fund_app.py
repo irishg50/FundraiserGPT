@@ -507,11 +507,8 @@ def result():
     if chat_request:
         print("Database data returned")
         # Store the necessary parameters in the session
-        session['chat_request'] = chat_request.prompt
-        session['chatgpt_response'] = chat_request.chatgpt_response
-        session['topic'] = chat_request.topic
-        session['model'] = chat_request.engine
-        session['format'] = chat_request.format
+        chatgpt_response = chat_request.chatgpt_response
+        format = chat_request.format
 
 
 
@@ -526,9 +523,8 @@ def result():
             }
             format_data.append(format_dict)
         print("formats retrieved")
-        session['format_data'] = format_data
 
-        return render_template("result.html", chat_request_id = chat_request_id)
+        return render_template("result.html", response = chatgpt_response, format = format, formats = formats)
 
 
 @app.route("/admin")

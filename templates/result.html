@@ -10,12 +10,12 @@
 </style>
 
 
-<div id="resultBody"  style="display:none">
+<div id="resultBody"  style="display:block">
 <p>Done! Here is your result.</p>
     <pre>
-  <div id="resultDiv"></div>
+  <div id="resultDiv">{{ response }}</div>
 </pre>
-<div id="copyButton" style="display: none;">
+<div id="copyButton" style="display: block;">
       <button id="copy-button" onclick="copyToClipboard()">Copy to Clipboard</button>
   <a href="{{ url_for('index') }}">Back</a>
    </div>
