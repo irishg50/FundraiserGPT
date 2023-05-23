@@ -465,14 +465,15 @@ def save_chat_response():
     format = session.get('format')
 
 
-    chat_request = ChatRequest(user_id=current_user.id, prompt=final_prompt, engine="gpt-3.5-turbo", chatgpt_response=chatgpt_response, topic=topic, timestamp=datetime.datetime.utcnow(), format=format)
+    chat_request = ChatRequest(user_id=current_user.id, prompt=final_prompt, engine=model, chatgpt_response=chatgpt_response, topic=topic, timestamp=datetime.datetime.utcnow(), format=format)
     db.session.add(chat_request)
     db.session.commit()
 
     new_chat_request_id = chat_request.id
-    print(f"chat_request_id from databae: {new_chat_request_id}")
+    print(f"chat_request_id from database: {new_chat_request_id}")
     session['chat_request_id'] = new_chat_request_id
     flash("Chat request ID stored in session.")
+    session.commit()
 
     return jsonify({"success": True})
 
