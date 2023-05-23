@@ -462,9 +462,9 @@ def save_chat_response():
     db.session.add(chat_request)
     db.session.commit()
 
-    new_chat_request_ID = chat_request.id
+    new_chat_request_id = chat_request.id
     print(f"chat_request_id from databae: {new_chat_request_id}")
-    session['chat_request_id'] = new_chat_request_ID
+    session['chat_request_id'] = new_chat_request_id
 
     return jsonify({"success": True})
 
