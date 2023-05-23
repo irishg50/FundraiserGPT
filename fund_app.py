@@ -462,7 +462,8 @@ def save_chat_response():
     db.session.add(chat_request)
     db.session.commit()
 
-
+    new_chat_request_ID = new_chat_request.id
+    session['chat_request_id'] = new_chat_request_ID
 
     return jsonify({"success": True})
 
