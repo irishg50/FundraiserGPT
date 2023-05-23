@@ -346,7 +346,7 @@ def start():
                 task = AsyncResult(task_id)
                 print("Async Task created")
 
-                return redirect(url_for('results'))
+                return redirect(url_for('submit'))
 
 
             except Exception as e:
@@ -462,6 +462,8 @@ def save_chat_response():
     db.session.add(chat_request)
     db.session.commit()
 
+
+
     return jsonify({"success": True})
 
 @app.route('/api/tasks/<task_id>', methods=['GET'])
@@ -490,11 +492,19 @@ def get_task_status(task_id):
         return jsonify({'status': 'PENDING'})
 
 
-@app.route("/results")
+@app.route("/result")
 @login_required
-def results():
-        task_id = session.get('task_id')
-        format = session.get('format')
+def result():
+    chat_request_id = session.get("chat_request_id")
+    chat_request = ChatRequest.query.get(chat_request_id)
+    if chat_request:
+        # Store the necessary parameters in the session
+        session['chat_request'] = chat_request.prompt
+        session['chatgpt_response'] = chat_request.chatgpt_response
+        session['topic'] = chat_request.topic
+        session['model'] = chat_request.engine
+        session['format'] = chat_request.format
+
         # Create a list of dictionaries representing each row in the formats table
         formats = Formats.query.all()
         format_data = []
@@ -508,7 +518,7 @@ def results():
 
         session['format_data'] = format_data
 
-        return render_template("results.html", task_id=task_id, format = format, formats=format_data)
+        return render_template("result.html", chat_request_id = chat_request_id)
 
 
 @app.route("/admin")
@@ -526,6 +536,13 @@ def admin():
     else:
         flash("You do not have permission to access this page.")
         return redirect(url_for("index"))
+
+
+@app.route('/submit')
+@login_required
+def submit():
+    task_id = session.get('task_id')
+    return render_template("submit.html", task_id=task_id)
 
 @app.route('/status')
 @login_required

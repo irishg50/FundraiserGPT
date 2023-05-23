@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+    <style>
+#resultDiv {
+  white-space: pre-wrap; /* Word wrap for pre-formatted text */
+}
+</style>
+
+     <script>
+function callFlaskSave(responseValue) {
+  console.log('callFlaskSave function called'); // Print statement
+
+  fetch('/save_chat_response', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ responseValue: responseValue })
+  })
+  .then(() => {
+    // Request sent successfully, background process initiated
+  })
+  .catch(error => {
+    console.error('Error occurred while calling Flask route:', error);
+  });
+}
+
+function fetchTaskResult(taskId) {
+  fetch('/api/tasks/' + taskId)
+    .then(response => response.json())
+    .then(data => {
+      if (data.status === 'SUCCESS') {
+
+        // Task result is available, display it on the web page
+        const resultElement = document.getElementById('resultDiv');
+        const jsonString = JSON.stringify(data.result);
+
+        responseValue = jsonString;
+        callFlaskSave(responseValue);
+
+        window.location.href = '/result';
+
+      } else {
+        // Task result is still pending, continue checking after a delay
+        setTimeout(() => fetchTaskResult(taskId), 3000); // Check again after 5 seconds
+      }
+    })
+    .catch(error => {
+      console.error('Error occurred while fetching task result:', error);
+    });
+}
+
+  // Call the function to fetch the task result for a specific task ID
+fetchTaskResult('{{ task_id }}');
+
+  </script>
+<div id="loadingBody">
+<div id="loading-spinner" class="spinner-border text-primary" role="status" style="display:inline-block;">
+  <span class="sr-only">.</span>
+</div>
+<p>Loading ... (this could take a while)</p>
+</div>
+
+
+function fetchTaskResult(taskId) {
+  fetch('/api/tasks/' + taskId)
+    .then(response => response.json())
+    .then(data => {
+      if (data.status === 'SUCCESS') {
+
+
+        // Task result is available, display it on the web page
+        const resultElement = document.getElementById('resultDiv');
+        const jsonString = JSON.stringify(data.result);
+        const resultData = JSON.parse(jsonString);
+
+        resultElement.textContent = resultData.response;
+
+
+        responseValue = resultData.response;
+        callFlaskSave(responseValue);
+
+      } else {
+        // Task result is still pending, continue checking after a delay
+        setTimeout(() => fetchTaskResult(taskId), 3000); // Check again after 5 seconds
+      }
+    })
+    .catch(error => {
+      console.error('Error occurred while fetching task result:', error);
+    });
+}
+
+  // Call the function to fetch the task result for a specific task ID
+fetchTaskResult('{{ task_id }}');
+
+  </script>
+
+
+{% endblock %}
+
