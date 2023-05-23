@@ -496,7 +496,7 @@ def get_task_status(task_id):
 @login_required
 def result():
     chat_request_id = session.get("chat_request_id")
-    print(f"chat_request_id from session: {chat_request_id})
+    print(f"chat_request_id from session: {chat_request_id}")
 
     chat_request = ChatRequest.query.get(chat_request_id)
     if chat_request:
