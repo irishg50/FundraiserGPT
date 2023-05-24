@@ -436,16 +436,19 @@ def response():
         # Store the result in the database
         final_prompt = session.get('final_prompt')
         topic = session.get('topic')
-        model = session.get('model') 
-        chat_request = ChatRequest(user_id=current_user.id, prompt=final_prompt, engine="gpt-3.5-turbo", chatgpt_response=chatgpt_response, topic=topic, timestamp=datetime.datetime.utcnow())
+        model = session.get('model')
+        format = session.get('format')
+        chat_request = ChatRequest(user_id=current_user.id, prompt=final_prompt, engine=model, chatgpt_response=chatgpt_response, topic=topic, timestamp=datetime.datetime.utcnow())
         db.session.add(chat_request)
         db.session.commit()
 
-        # Store variables in session
-        session['chatgpt_response'] = chatgpt_response
+        new_chat_request_id = chat_request.id
+        print(f"chat_request_id from database: {new_chat_request_id}")
+        session['chat_request_id'] = new_chat_request_id
 
         # Render the template once the task is successful
-        return render_template("response.html", response=chatgpt_response, chat_request=chat_request, topic=topic, model=model)
+        return render_template("result.html", response=chatgpt_response, format=format, formats=formats)
+
 
 @app.route('/save_chat_response', methods=['POST'])
 @login_required
@@ -504,9 +507,8 @@ def get_task_status(task_id):
 
 @app.route("/result")
 @login_required
-def result():
+def result(chat_request_id):
     chat_request_id = session.get("chat_request_id")
-    flash("Retrieved chat request ID from session.")
     print(f"chat_request_id from session: {chat_request_id}")
 
 #    current_record_id = request.args.get('current_record_id', None)

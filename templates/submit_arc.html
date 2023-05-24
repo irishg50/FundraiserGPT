@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+    <style>
+#resultDiv {
+  white-space: pre-wrap; /* Word wrap for pre-formatted text */
+}
+</style>
+
+     <script>
+
+let current_record_id;
+
+
+function callFlaskSave(responseValue) {
+  console.log('callFlaskSave function called'); // Print statement
+
+  fetch('/save_chat_response', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ responseValue: responseValue })
+  })
+  .then(() => {
+    // Request sent successfully, background process initiated
+  })
+  .catch(error => {
+    console.error('Error occurred while calling Flask route:', error);
+  });
+}
+
+function callFlaskSave_arc(responseValue) {
+  console.log('callFlaskSave function called'); // Print statement
+  // Assuming it is a POST request
+  fetch('/save_chat_response', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ responseValue: responseValue }),
+  })
+    .then(response => response.json())
+    .then(data => {
+      // You can access your returned value here from flask server
+      console.log(data);
+      console.log(data.chat_request_id);
+      const jsonString = JSON.stringify(data.chat_request_id);
+      alert(JSON.stringify(data));
+      current_record_id = data.chat_request_id;
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+    });
+}
+
+
+function fetchTaskResult(taskId) {
+  fetch('/api/tasks/' + taskId)
+    .then(response => response.json())
+    .then(data => {
+      if (data.status === 'SUCCESS') {
+
+        // Task result is available, retrieve the result
+        const jsonString = JSON.stringify(data.result);
+
+        console.log(jsonString);
+
+        // Pass the result to save chat_request
+        responseValue = jsonString;
+
+        callFlaskSave(responseValue);
+
+
+        console.log(current_record_id);
+
+        // redirect to /result
+        window.location.href = '/result?current_record_id=' + current_record_id;
+
+      } else {
+        // Task result is still pending, continue checking after a delay
+        setTimeout(() => fetchTaskResult(taskId), 3000); // Check again after 5 seconds
+      }
+    })
+    .catch(error => {
+      console.error('Error occurred while fetching task result:', error);
+    });
+}
+
+  // Call the function to fetch the task result for a specific task ID
+fetchTaskResult('{{ task_id }}');
+
+  </script>
+<div id="loadingBody">
+<div id="loading-spinner" class="spinner-border text-primary" role="status" style="display:inline-block;">
+  <span class="sr-only">.</span>
+</div>
+<p>Loading ... (this could take a while)</p>
+</div>
+
+
+
+{% endblock %}
+
