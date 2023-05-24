@@ -385,22 +385,35 @@ def continue_conversation():
     additional_input = request.form["additional_input"]
     previous_chat_request = request.form["chat_request"]
     topic = request.form["topic"]
-    model = request.form["model"]
     format = request.form["format"]
+    model = request.form["model"]
+
+    # Sanitize the input fields
+    topic = sanitize_input(topic)
+    model = sanitize_input(model)
+    additional_input = sanitize_input(additional_input)
+    previous_chat_request = sanitize_input(previous_chat_request)
+    format = sanitize_input(format)
+
     combined_chat_request = previous_chat_request + " In addition, apply the following: " + additional_input
 
     try:
-        task = send_request_to_chatgpt_task.apply_async(args=[combined_chat_request_prompt, model])
+        task = send_request_to_chatgpt_task.apply_async(args=[combined_chat_request, model])
         print(f"Task created with ID: {task.id}")
         session['task_id'] = task.id
+        session['final_prompt'] = combined_chat_request
+        session['topic'] = topic
+        session['model'] = model
+        session['format'] = format
+
         task = AsyncResult(task_id)
         print("Async Task created")
 
         return redirect(url_for("submit"))
 
-    except Timeout:
-        flash("The request to the ChatGPT service timed out. Please try again.")
-        return redirect(url_for("start"))
+    except Exception as e:
+        print("Exception:", e)
+        return make_response(jsonify({"error": "Internal Server Error1"}), 500)
 
 
 @app.route("/response")
@@ -567,9 +580,18 @@ def admin():
         return redirect(url_for("index"))
 
 
-@app.route('/submit')
+@app.route('/submit', methods=['GET', 'POST'])
 @login_required
 def submit():
+    if request.method == 'POST':
+        # Process the POST request data here
+        # Example: Get data from the form
+        form_data = request.form['form_field']
+        # Process the data as needed
+
+        # Redirect or return a response
+
+    # Handle the GET request
     task_id = session.get('task_id')
     return render_template("submit.html", task_id=task_id)
 

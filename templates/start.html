@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="container">
-  <form id="chat-form" method="post" class="mb-3" action="{{ url_for('start') }}" onsubmit="showSpinner()">
+  <form id="chat-form" method="post" class="mb-3" action="{{ url_for('start') }}">
     <div class="mb-3">
       <h3 class="mb-0"><b>Help me write a fundraising appeal for {{ org_name }}</b></h3>
       <input type="hidden" id="org_name" name="org_name" class="form-control" value="{{ org_name }}" readonly>
