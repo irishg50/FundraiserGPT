@@ -458,8 +458,22 @@ def response():
         print(f"chat_request_id from database: {new_chat_request_id}")
         session['chat_request_id'] = new_chat_request_id
 
+        # Fetch all rows from the Formats table
+        formats = Formats.query.all()
+        # Create a list of dictionaries representing each row in the formats table
+        format_data = []
+        for format_row in formats:
+            format_dict = {
+                "name": format_row.name,
+                "desc": format_row.desc,
+                "guideline": format_row.guideline
+            }
+            format_data.append(format_dict)
+
+        session['format_data'] = format_data
+
         # Render the template once the task is successful
-        return render_template("result.html", response=chatgpt_response, format=format, model=model, topic=topic, final_prompt=final_prompt)
+        return render_template("result.html", response=chatgpt_response, format=format, model=model, topic=topic, final_prompt=final_prompt, formats=format_data)
 
 
 @app.route("/reloadresponse/<int:chat_request_id>")
