@@ -405,25 +405,6 @@ def continue_conversation():
         print("Error from send_request_to_chatgpt:", response["error"])
         return make_response(jsonify({"error": response["error"]}), 400)
 
-@app.route("/reload_response/<int:chat_request_id>")
-@login_required
-def reload_response(chat_request_id):
-    # Retrieve the ChatRequest record based on the provided id
-    chat_request = ChatRequest.query.get(chat_request_id)
-    if chat_request:
-        # Store the necessary parameters in the session
-        session['chat_request'] = chat_request.prompt
-        session['chatgpt_response'] = chat_request.chatgpt_response
-        session['topic'] = chat_request.topic
-        session['model'] = chat_request.engine
-        session['format'] = chat_request.format
-        # Redirect to the response route
-        return redirect(url_for("results"))
-    else:
-        flash("Chat request not found.")
-        return redirect(url_for("chat_history"))
-
-
 @app.route("/response")
 @login_required
 def response():
@@ -464,8 +445,21 @@ def reloadresponse(chat_request_id):
         topic = chat_request.topic
         format_ = chat_request.format  # Renamed the variable to format_ to avoid conflict with Python's built-in function
 
+        # Fetch all rows from the Formats table
+        formats = Formats.query.all()
+        # Create a list of dictionaries representing each row in the formats table
+        format_data = []
+        for format_row in formats:
+            format_dict = {
+                "name": format_row.name,
+                "desc": format_row.desc,
+                "guideline": format_row.guideline
+            }
+            format_data.append(format_dict)
+
+
         # Render the template
-        return render_template("result.html", response=chatgpt_response, format=format_)
+        return render_template("result.html", response=chatgpt_response, format=format, formats=format_data)
 
     return "Chat Request not found"
 

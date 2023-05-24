@@ -26,7 +26,7 @@
   </div>
 </div>
 <div class="mb-3">
-  <p class="mb-0"><i>What <b>impact</b> can donations make?</i></p>
+  <p class="mb-0"><i>What is the <b>impact</b> that donations to this appeal can make?</i></p>
   <div class="input-wrapper">
     <textarea id="impact" name="impact" class="form-control" maxlength="250" rows="2"></textarea>
     <span class="char-counter" id="impact-counter">0 / 250</span>
@@ -73,7 +73,7 @@
     <div class="mb-3">
 <p class="mb-0"><i>Okay, that's enough to create a first draft. Click Generate Appeal to continue.</i></p>
 </div>
-<button type="submit" class="btn btn-primary">Generate Appeal</button>
+<button type="submit" id="submitButton" class="btn btn-primary onclick="checkRadioButtonAndSubmit()">Generate Appeal</button>
 <button type="button" onclick="clearForm()">Clear Form and Restart</button>
 
   </form>
@@ -131,4 +131,28 @@ document.getElementById('notes').addEventListener('input', function () {
 });
 
 </script>
+
+<script>
+    // Function to check if one of the radio buttons is selected and submit the form
+    function checkRadioButtonAndSubmit() {
+        const radioButtons = document.getElementsByName('format');
+        let isRadioButtonSelected = false;
+
+        // Check if one of the radio buttons is selected
+        for (let i = 0; i < radioButtons.length; i++) {
+            if (radioButtons[i].checked) {
+                isRadioButtonSelected = true;
+                break;
+            }
+        }
+
+        // If a radio button is selected, submit the form
+        if (isRadioButtonSelected) {
+            document.getElementById('myForm').submit();
+        } else {
+            alert('Please select a format before submitting.');
+        }
+    }
+</script>
+
 {% endblock %}
