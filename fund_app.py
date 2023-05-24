@@ -384,14 +384,13 @@ def start():
 def regenerate():
     if request.method == "POST":
         try:
-            print("regenerate post started")
             additional_input = request.form["additional_input"]
-            print("regenerate form fields 1")
             previous_chat_request = request.form["prev_prompt"]  # Updated variable name
             print("regenerate form fields 2")
             topic = request.form["topic"]
-            reqformat = request.form["format"]
             print("regenerate form fields 3")
+            reqformat = request.form["formatSel"]
+            print("regenerate form fields 4")
             model = request.form["model"]
             print("regenerate form fields loaded")
             # Sanitize the input fields
