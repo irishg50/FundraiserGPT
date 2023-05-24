@@ -44,6 +44,8 @@ function fetchTaskResult(taskId) {
         // Get latest record id
         let current_record_id = data.current_record_id;
 
+        console.log(current_record_id);
+
         // redirect to /result
         window.location.href = '/result?current_record_id=' + current_record_id;
 
