@@ -382,12 +382,13 @@ def start():
 @app.route("/regenerate", methods=["GET", "POST"])
 @login_required
 def regenerate():
-
     if request.method == "POST":
         try:
             print("regenerate post started")
             additional_input = request.form["additional_input"]
+            print("regenerate form fields 1")
             previous_chat_request = request.form["prev_prompt"]  # Updated variable name
+            print("regenerate form fields 2")
             topic = request.form["topic"]
             format = request.form["format"]
             model = request.form["model"]
