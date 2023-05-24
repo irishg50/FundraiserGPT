@@ -47,6 +47,8 @@ function callFlaskSave(responseValue) {
       // You can access your returned value here from flask server
       console.log(data);
       console.log(data.chat_request_id);
+      const jsonString = JSON.stringify(data.chat_request_id);
+      alert(JSON.stringify(data));
       current_record_id = data.chat_request_id;
     })
     .catch((error) => {
@@ -68,7 +70,7 @@ function fetchTaskResult(taskId) {
 
         // Pass the result to save chat_request
         responseValue = jsonString;
-   
+
         callFlaskSave(responseValue);
 
 

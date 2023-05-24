@@ -474,7 +474,7 @@ def save_chat_response():
 #    session['chat_request_id'] = new_chat_request_id
 #    flash("Chat request ID stored in session.")
 
-    return jsonify({"success": True, "chat_request_id": new_chat_request_id})
+    return jsonify({"chat_request_id": new_chat_request_id})
 
 @app.route('/api/tasks/<task_id>', methods=['GET'])
 def get_task_status(task_id):
