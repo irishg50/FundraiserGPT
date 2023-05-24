@@ -381,7 +381,7 @@ def start():
 
 @app.route("/regenerate", methods=["POST"])
 @login_required
-def regemerate():
+def regenerate():
     additional_input = request.form["additional_input"]
     previous_chat_request = request.form["chat_request"]
     topic = request.form["topic"]
