@@ -75,9 +75,6 @@
 </div>
 <button type="submit" class="btn btn-primary">Generate Appeal</button>
 <button type="button" onclick="clearForm()">Clear Form and Restart</button>
-<div id="loading-spinner" class="spinner-border text-primary" role="status" style="display:none;">
-<span class="sr-only">.</span>
-</div>
 
   </form>
   <p> </p>
@@ -107,10 +104,6 @@
 </style>
 
 <script>
-function showSpinner() {
-  // Show the spinner
-  document.getElementById("loading-spinner").style.display = "inline-block";
-}
 
 function clearForm() {
   // Get the form element
