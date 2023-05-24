@@ -379,7 +379,7 @@ def start():
 
     return render_template("start.html", org_name=current_user.org_name, user_class=current_user.user_class, formats=format_data)
 
-@app.route("/regenerate", methods=["POST"])
+@app.route("/regenerate", methods=["GET", "POST"])
 @login_required
 def regenerate():
     additional_input = request.form["additional_input"]
