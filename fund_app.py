@@ -451,6 +451,26 @@ def response():
         return render_template("result.html", response=chatgpt_response, format=format)
 
 
+@app.route("/reloadresponse/<int:chat_request_id>")
+@login_required
+def reloadresponse(chat_request_id):
+    chat_request = ChatRequest.query.filter_by(id=chat_request_id).first()
+
+    if chat_request:
+        user_id = chat_request.id
+        prompt = chat_request.prompt
+        model = chat_request.model
+        chatgpt_response = chat_request.chatgpt_response
+        topic = chat_request.topic
+        format_ = chat_request.format  # Renamed the variable to format_ to avoid conflict with Python's built-in function
+
+        # Render the template
+        return render_template("result.html", response=chatgpt_response, format=format_)
+
+    return "Chat Request not found"
+
+
+
 @app.route('/save_chat_response', methods=['POST'])
 @login_required
 def save_chat_response():
