@@ -382,8 +382,10 @@ def start():
 @app.route("/regenerate", methods=["GET", "POST"])
 @login_required
 def regenerate():
+    print("regenerate started")
     if request.method == "POST":
         try:
+            print("regenerate post started")
             additional_input = request.form["additional_input"]
             previous_chat_request = request.form["prev_prompt"]  # Updated variable name
             topic = request.form["topic"]
@@ -400,6 +402,7 @@ def regenerate():
             combined_chat_request = previous_chat_request + " In addition, apply the following: " + additional_input
 
             try:
+                print("regenerate send to chatgpt started")
                 task = send_request_to_chatgpt_task.apply_async(args=[combined_chat_request, model])
                 print(f"Task created with ID: {task.id}")
                 session['task_id'] = task.id
