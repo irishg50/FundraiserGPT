@@ -456,6 +456,7 @@ def reloadresponse(chat_request_id):
         topic = chat_request.topic
         format = chat_request.format  # Renamed the variable to format_ to avoid conflict with Python's built-in function
 
+
         # Fetch all rows from the Formats table
         formats = Formats.query.all()
         # Create a list of dictionaries representing each row in the formats table
@@ -470,7 +471,7 @@ def reloadresponse(chat_request_id):
 
 
         # Render the template
-        return render_template("result.html", response=chatgpt_response, format=format, formats=format_data)
+        return render_template("result.html", response=chatgpt_response, format=format, formats=format_data, final_prompt=prompt, model=model, topic=topic)
 
     return "Chat Request not found"
 
