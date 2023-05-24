@@ -430,11 +430,7 @@ def response():
         task_id = session.get('task_id')
         print(f"Task ID retrieved from session: {task_id}")
 
-        # Call a function to retrieve the chat_request result based on the task_id
-        chat_request_result = get_chat_request_result(task_id)
-
-        # Extract the desired response from the chat_request result
-        chatgpt_response = chat_request_result["response"]
+        chatgpt_response = response["response"]
 
         # Store the result in the database
         final_prompt = session.get('final_prompt')
