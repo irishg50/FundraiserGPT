@@ -430,10 +430,9 @@ def response():
         task_id = session.get('task_id')
         print(f"Task ID retrieved from session: {task_id}")
 
-        if task_id:
-            result = celery.AsyncResult(task_id)
-            print(result)
-        # chatgpt_response = response["response"]
+        result = celery.AsyncResult(task_id)
+        response = result.get()
+        chatgpt_response = response["response"]
 
         # Store the result in the database
         final_prompt = session.get('final_prompt')
