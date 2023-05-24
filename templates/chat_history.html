@@ -6,9 +6,12 @@
     <table class="table table-striped">
       <thead>
         <tr>
+          {% if current_user.user_class > 6 %}
           <th>User</th>
+          {% endif %}
           <th>Timestamp</th>
           <th>Topic</th>
+          <th>Format</th>
         </tr>
       </thead>
       <tbody>
