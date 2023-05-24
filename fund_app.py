@@ -617,15 +617,6 @@ def admin():
 @app.route('/submit', methods=['GET', 'POST'])
 @login_required
 def submit():
-    if request.method == 'POST':
-        # Process the POST request data here
-        # Example: Get data from the form
-        form_data = request.form['form_field']
-        # Process the data as needed
-
-        # Redirect or return a response
-
-    # Handle the GET request
     task_id = session.get('task_id')
     return render_template("submit.html", task_id=task_id)
 
