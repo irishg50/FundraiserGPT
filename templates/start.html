@@ -73,7 +73,7 @@
     <div class="mb-3">
 <p class="mb-0"><i>Okay, that's enough to create a first draft. Click Generate Appeal to continue.</i></p>
 </div>
-<button type="button" id="submitButton" class="btn btn-primary onclick="checkRadioButtonAndSubmit()">Generate Appeal</button>
+<button type="submit" id="submitButton" class="btn btn-primary">Generate Appeal</button>
 <button type="button" onclick="clearForm()">Clear Form and Restart</button>
 
   </form>
@@ -134,7 +134,7 @@ document.getElementById('notes').addEventListener('input', function () {
 
 <script>
     // Function to check if one of the radio buttons is selected and submit the form
-    function checkRadioButtonAndSubmit() {
+    function checkRadioButtonAndSubmit(event) {
         const radioButtons = document.getElementsByName('format');
         let isRadioButtonSelected = false;
 
@@ -146,13 +146,16 @@ document.getElementById('notes').addEventListener('input', function () {
             }
         }
 
-        // If a radio button is selected, submit the form
-        if (isRadioButtonSelected) {
-            document.getElementById('myForm').submit();
-        } else {
+        // If a radio button is selected, continue with form submission
+        if (!isRadioButtonSelected) {
+            event.preventDefault(); // Prevent form submission
             alert('Please select a format before submitting.');
         }
     }
+
+    // Add event listener to submit button
+    const submitButton = document.getElementById('submitButton');
+    submitButton.addEventListener('click', checkRadioButtonAndSubmit);
 </script>
 
 {% endblock %}
