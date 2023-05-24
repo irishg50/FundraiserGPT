@@ -443,7 +443,7 @@ def response():
         topic = session.get('topic')
         model = session.get('model')
         format = session.get('format')
-        chat_request = ChatRequest(user_id=current_user.id, final_prompt=final_prompt, engine=model, chatgpt_response=chatgpt_response, topic=topic, timestamp=datetime.datetime.utcnow(), format=format)
+        chat_request = ChatRequest(user_id=current_user.id, prompt=final_prompt, engine=model, chatgpt_response=chatgpt_response, topic=topic, timestamp=datetime.datetime.utcnow(), format=format)
         db.session.add(chat_request)
         db.session.commit()
 
