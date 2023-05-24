@@ -396,7 +396,7 @@ def continue_conversation():
         task = AsyncResult(task_id)
         print("Async Task created")
 
-    return redirect(url_for("submit"))
+        return redirect(url_for("submit"))
 
     except Timeout:
         flash("The request to the ChatGPT service timed out. Please try again.")
