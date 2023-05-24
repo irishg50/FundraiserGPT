@@ -390,7 +390,8 @@ def regenerate():
             previous_chat_request = request.form["prev_prompt"]  # Updated variable name
             print("regenerate form fields 2")
             topic = request.form["topic"]
-            format = request.form["format"]
+            reqformat = request.form["format"]
+            print("regenerate form fields 3")
             model = request.form["model"]
             print("regenerate form fields loaded")
             # Sanitize the input fields
@@ -398,7 +399,7 @@ def regenerate():
             model = sanitize_input(model)
             additional_input = sanitize_input(additional_input)
             previous_chat_request = sanitize_input(previous_chat_request)
-            format = sanitize_input(format)
+            reqformat = sanitize_input(reqformat)
             print("regenerate form fields sanitized")
             combined_chat_request = previous_chat_request + " In addition, apply the following: " + additional_input
 
@@ -410,7 +411,7 @@ def regenerate():
                 session['final_prompt'] = combined_chat_request
                 session['topic'] = topic
                 session['model'] = model
-                session['format'] = format
+                session['format'] = reqformat
 
                 task = AsyncResult(session.get('task_id'))  # Retrieve task_id from session
                 print("Async Task created")
