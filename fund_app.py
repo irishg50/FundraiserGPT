@@ -382,39 +382,47 @@ def start():
 @app.route("/regenerate", methods=["GET", "POST"])
 @login_required
 def regenerate():
-    additional_input = request.form["additional_input"]
-    previous_chat_request = request.form["chat_request"]
-    topic = request.form["topic"]
-    format = request.form["format"]
-    model = request.form["model"]
+    if request.method == "POST":
+        try:
+            additional_input = request.form["additional_input"]
+            previous_chat_request = request.form["chat_request"]
+            topic = request.form["topic"]
+            format = request.form["format"]
+            model = request.form["model"]
 
-    # Sanitize the input fields
-    topic = sanitize_input(topic)
-    model = sanitize_input(model)
-    additional_input = sanitize_input(additional_input)
-    previous_chat_request = sanitize_input(previous_chat_request)
-    format = sanitize_input(format)
+            # Sanitize the input fields
+            topic = sanitize_input(topic)
+            model = sanitize_input(model)
+            additional_input = sanitize_input(additional_input)
+            previous_chat_request = sanitize_input(previous_chat_request)
+            format = sanitize_input(format)
 
-    combined_chat_request = previous_chat_request + " In addition, apply the following: " + additional_input
+            combined_chat_request = previous_chat_request + " In addition, apply the following: " + additional_input
 
-    try:
-        task = send_request_to_chatgpt_task.apply_async(args=[combined_chat_request, model])
-        print(f"Task created with ID: {task.id}")
-        session['task_id'] = task.id
-        session['final_prompt'] = combined_chat_request
-        session['topic'] = topic
-        session['model'] = model
-        session['format'] = format
+            try:
+                task = send_request_to_chatgpt_task.apply_async(args=[combined_chat_request, model])
+                print(f"Task created with ID: {task.id}")
+                session['task_id'] = task.id
+                session['final_prompt'] = combined_chat_request
+                session['topic'] = topic
+                session['model'] = model
+                session['format'] = format
 
-        task = AsyncResult(task_id)
-        print("Async Task created")
+                task = AsyncResult(task_id)
+                print("Async Task created")
 
-        return redirect(url_for("submit"))
+                return redirect(url_for("submit"))
 
-    except Exception as e:
-        print("Exception:", e)
-        return make_response(jsonify({"error": "Internal Server Error1"}), 500)
+            except Exception as e:
+                print("Exception:", e)
+                return make_response(jsonify({"error": "Internal Server Error1"}), 500)
 
+        except ValueError as ve:
+            print("ValueError:", ve)
+            return make_response(jsonify({"error": str(ve)}), 400)
+        except Exception as e:
+            print("Exception:", e)
+            return make_response(jsonify({"error": "Internal Server Error2"}), 500)
 
 @app.route("/response")
 @login_required
