@@ -34,8 +34,10 @@ function fetchTaskResult(taskId) {
     .then(data => {
       if (data.status === 'SUCCESS') {
 
-        // Task result is available, retireve the result
+        // Task result is available, retrieve the result
         const jsonString = JSON.stringify(data.result);
+
+        console.log(jsonString);
 
         // Pass the result to save chat_request
         responseValue = jsonString;
