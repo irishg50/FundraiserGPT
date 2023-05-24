@@ -439,7 +439,7 @@ def response():
         topic = session.get('topic')
         model = session.get('model')
         format = session.get('format')
-        chat_request = ChatRequest(user_id=current_user.id, prompt=final_prompt, engine=model, chatgpt_response=chatgpt_response, topic=topic, timestamp=datetime.datetime.utcnow())
+        chat_request = ChatRequest(user_id=current_user.id, prompt=final_prompt, engine=model, chatgpt_response=chatgpt_response, topic=topic, timestamp=datetime.datetime.utcnow(), format=format)
         db.session.add(chat_request)
         db.session.commit()
 
@@ -448,7 +448,7 @@ def response():
         session['chat_request_id'] = new_chat_request_id
 
         # Render the template once the task is successful
-        return render_template("result.html", response=chatgpt_response, format=format, formats=formats)
+        return render_template("result.html", response=chatgpt_response, format=format)
 
 
 @app.route('/save_chat_response', methods=['POST'])
