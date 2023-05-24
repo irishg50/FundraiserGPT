@@ -76,8 +76,11 @@ bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
 login_manager.login_view = "login"
 
+# Enable session support
+app.config['SESSION_TYPE'] = 'filesystem'
+
 # Declare a session variable
-session['chat_request_id'] = 0
+session['your_variable'] = 'your_value'
 
 @app.after_request
 def add_header(response):
