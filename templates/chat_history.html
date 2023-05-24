@@ -14,9 +14,12 @@
       <tbody>
         {% for chat_request in chat_requests %}
           <tr>
+            {% if current_user.user_class > 6 %}
             <td>{{ chat_request.user.username }}</td>
+            {% endif %}
             <td>{{ chat_request.timestamp.strftime('%Y-%m-%d %H:%M') }}</td>
             <td><a href="{{ url_for('reloadresponse', chat_request_id=chat_request.id) }}">{{ chat_request.topic }}</a></td>
+            <td>{{ chat_request.format }}</td>
           </tr>
         {% endfor %}
       </tbody>
