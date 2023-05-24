@@ -37,12 +37,12 @@ function callFlaskSave(responseValue) {
     },
     body: JSON.stringify({ responseValue: responseValue }),
   })
-    .then(response => response.json())
-    .then(data => {
+    .then(responseSave => responseSave.json())
+    .then(dataSave => {
       // You can access your returned value here from flask server
-      console.log(data.chat_request_id);
+      console.log(dataSave.chat_request_id);
       // Get latest record id
-      let current_record_id = data.chat_request_id;
+      let current_record_id = dataSave.chat_request_id;
     })
     .catch((error) => {
       console.error('Error:', error);
@@ -63,6 +63,7 @@ function fetchTaskResult(taskId) {
 
         // Pass the result to save chat_request
         responseValue = jsonString;
+        current_record_id = ""
         callFlaskSave(responseValue);
 
 
