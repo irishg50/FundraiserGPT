@@ -471,7 +471,7 @@ def reloadresponse(chat_request_id):
 
 
         # Render the template
-        return render_template("result.html", response=chatgpt_response, format=format, formats=format_data, final_prompt=prompt, model=model, topic=topic)
+        return render_template("result.html", response=chatgpt_response, format=format, formats=format_data, prev_prompt=prompt, model=model, topic=topic)
 
     return "Chat Request not found"
 
