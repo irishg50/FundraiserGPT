@@ -382,7 +382,7 @@ def start():
 @app.route("/regenerate", methods=["GET", "POST"])
 @login_required
 def regenerate():
-    print("regenerate started")
+
     if request.method == "POST":
         try:
             print("regenerate post started")
@@ -391,14 +391,14 @@ def regenerate():
             topic = request.form["topic"]
             format = request.form["format"]
             model = request.form["model"]
-
+            print("regenerate form fields loaded")
             # Sanitize the input fields
             topic = sanitize_input(topic)
             model = sanitize_input(model)
             additional_input = sanitize_input(additional_input)
             previous_chat_request = sanitize_input(previous_chat_request)
             format = sanitize_input(format)
-
+            print("regenerate form fields sanitized")
             combined_chat_request = previous_chat_request + " In addition, apply the following: " + additional_input
 
             try:
