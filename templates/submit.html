@@ -41,8 +41,7 @@ function callFlaskSave(responseValue) {
     .then(dataSave => {
       // You can access your returned value here from flask server
       console.log(dataSave.chat_request_id);
-      // Get latest record id
-      let current_record_id = dataSave.chat_request_id;
+      current_record_id = dataSave.chat_request_id; 
     })
     .catch((error) => {
       console.error('Error:', error);
@@ -63,7 +62,7 @@ function fetchTaskResult(taskId) {
 
         // Pass the result to save chat_request
         responseValue = jsonString;
-        current_record_id = ""
+        let current_record_id;
         callFlaskSave(responseValue);
 
 
