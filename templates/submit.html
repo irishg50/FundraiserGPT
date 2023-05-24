@@ -10,6 +10,10 @@
 </style>
 
      <script>
+
+let current_record_id;
+
+
 function callFlaskSave_arc(responseValue) {
   console.log('callFlaskSave function called'); // Print statement
 
@@ -29,6 +33,7 @@ function callFlaskSave_arc(responseValue) {
 }
 
 function callFlaskSave(responseValue) {
+  console.log('callFlaskSave function called'); // Print statement
   // Assuming it is a POST request
   fetch('/save_chat_response', {
     method: 'POST',
@@ -37,11 +42,12 @@ function callFlaskSave(responseValue) {
     },
     body: JSON.stringify({ responseValue: responseValue }),
   })
-    .then(responseSave => responseSave.json())
-    .then(dataSave => {
+    .then(response => response.json())
+    .then(data => {
       // You can access your returned value here from flask server
-      console.log(dataSave.chat_request_id);
-      current_record_id = dataSave.chat_request_id; 
+      console.log(data);
+      console.log(data.chat_request_id);
+      current_record_id = data.chat_request_id;
     })
     .catch((error) => {
       console.error('Error:', error);
@@ -62,7 +68,7 @@ function fetchTaskResult(taskId) {
 
         // Pass the result to save chat_request
         responseValue = jsonString;
-        let current_record_id;
+   
         callFlaskSave(responseValue);
 
 
