@@ -42,7 +42,7 @@ function fetchTaskResult(taskId) {
         callFlaskSave(responseValue);
 
         // Get latest record id
-        let current_record_id = data.current_record_id;
+        let current_record_id = data.chat_request_id;
 
         console.log(current_record_id);
 
