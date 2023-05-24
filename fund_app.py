@@ -385,7 +385,7 @@ def regenerate():
     if request.method == "POST":
         try:
             additional_input = request.form["additional_input"]
-            previous_chat_request = request.form["chat_request"]
+            previous_chat_request = request.form["prev_prompt"]  # Updated variable name
             topic = request.form["topic"]
             format = request.form["format"]
             model = request.form["model"]
@@ -408,7 +408,7 @@ def regenerate():
                 session['model'] = model
                 session['format'] = format
 
-                task = AsyncResult(task_id)
+                task = AsyncResult(session.get('task_id'))  # Retrieve task_id from session
                 print("Async Task created")
 
                 return redirect(url_for("submit"))
@@ -423,6 +423,7 @@ def regenerate():
         except Exception as e:
             print("Exception:", e)
             return make_response(jsonify({"error": "Internal Server Error2"}), 500)
+
 
 @app.route("/response")
 @login_required
