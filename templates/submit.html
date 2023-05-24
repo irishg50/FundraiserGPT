@@ -41,8 +41,11 @@ function fetchTaskResult(taskId) {
         responseValue = jsonString;
         callFlaskSave(responseValue);
 
+        // Get latest record id
+        let current_record_id = data.current_record_id;
+
         // redirect to /result
-        window.location.href = '/result';
+        window.location.href = '/result?current_record_id=' + current_record_id;
 
       } else {
         // Task result is still pending, continue checking after a delay

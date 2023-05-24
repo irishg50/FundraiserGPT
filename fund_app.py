@@ -471,11 +471,10 @@ def save_chat_response():
 
     new_chat_request_id = chat_request.id
     print(f"chat_request_id from database: {new_chat_request_id}")
-    session['chat_request_id'] = new_chat_request_id
-    flash("Chat request ID stored in session.")
-    session.commit()
+#    session['chat_request_id'] = new_chat_request_id
+#    flash("Chat request ID stored in session.")
 
-    return jsonify({"success": True})
+    return jsonify({"success": True, "chat_request_id": new_chat_request_id})
 
 @app.route('/api/tasks/<task_id>', methods=['GET'])
 def get_task_status(task_id):
@@ -506,9 +505,13 @@ def get_task_status(task_id):
 @app.route("/result")
 @login_required
 def result():
-    chat_request_id = session.get("chat_request_id")
-    flash("Retrieved chat request ID from session.")
-    print(f"chat_request_id from session: {chat_request_id}")
+#    chat_request_id = session.get("chat_request_id")
+#    flash("Retrieved chat request ID from session.")
+#    print(f"chat_request_id from session: {chat_request_id}")
+
+    current_record_id = request.args.get('current_record_id', None)
+    if current_record_id is not None:
+        chat_request_id = int(current_record_id)
 
     chat_request = ChatRequest.query.get(chat_request_id)
     if chat_request:
