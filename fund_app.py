@@ -76,6 +76,8 @@ bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
 login_manager.login_view = "login"
 
+# Declare a session variable
+session['chat_request_id'] = 0
 
 @app.after_request
 def add_header(response):
@@ -471,8 +473,8 @@ def save_chat_response():
 
     new_chat_request_id = chat_request.id
     print(f"chat_request_id from database: {new_chat_request_id}")
-#    session['chat_request_id'] = new_chat_request_id
-#    flash("Chat request ID stored in session.")
+    session['chat_request_id'] = new_chat_request_id
+    flash("Chat request ID stored in session.")
 
     return jsonify({"chat_request_id": new_chat_request_id})
 
@@ -505,13 +507,13 @@ def get_task_status(task_id):
 @app.route("/result")
 @login_required
 def result():
-#    chat_request_id = session.get("chat_request_id")
-#    flash("Retrieved chat request ID from session.")
-#    print(f"chat_request_id from session: {chat_request_id}")
+    chat_request_id = session.get("chat_request_id")
+    flash("Retrieved chat request ID from session.")
+    print(f"chat_request_id from session: {chat_request_id}")
 
-    current_record_id = request.args.get('current_record_id', None)
-    if current_record_id is not None:
-        chat_request_id = int(current_record_id)
+#    current_record_id = request.args.get('current_record_id', None)
+#    if current_record_id is not None:
+#        chat_request_id = int(current_record_id)
 
     chat_request = ChatRequest.query.get(chat_request_id)
     if chat_request:
