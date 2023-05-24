@@ -386,21 +386,27 @@ def regenerate():
         try:
             additional_input = request.form["additional_input"]
             previous_chat_request = request.form["prev_prompt"]  # Updated variable name
-            print("regenerate form fields 2")
             topic = request.form["topic"]
-            print("regenerate form fields 3")
             reqformat = request.form["formatSel"]
-            print("regenerate form fields 4")
             model = request.form["model"]
-            print("regenerate form fields loaded")
             # Sanitize the input fields
             topic = sanitize_input(topic)
             model = sanitize_input(model)
             additional_input = sanitize_input(additional_input)
             previous_chat_request = sanitize_input(previous_chat_request)
             reqformat = sanitize_input(reqformat)
-            print("regenerate form fields sanitized")
-            combined_chat_request = previous_chat_request + " In addition, apply the following: " + additional_input
+
+            format_row = Formats.query.filter_by(name=reqformat).first()
+
+            final_output = ""
+
+            if format_row is not None:
+                 output = format_row.desc
+                 guideline = format_row.guideline
+                 final_output = ", The message should be in the form of " + output
+                 final_output += ". As much as possible, use the following guidelines for writing the message: " + guideline
+
+            combined_chat_request = previous_chat_request + final_output + " In addition, apply the following: " + additional_input
 
             try:
                 print("regenerate send to chatgpt started")

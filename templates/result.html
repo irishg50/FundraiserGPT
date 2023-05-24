@@ -22,9 +22,9 @@
 </div>
 <div id="continueconversation">
   <p>Do you want to regenerate this text?  </p>
-    <p>We can re-submit it with the same choices, select a different output format, or add additional guidance in the box below.</p>
+    <p>Use the form below to generate a new result using the same input fields, but you can select a different output format..</p>
    <form action="{{ url_for('regenerate') }}" method="post">
-    <input type="text" id="prev_response" name="prev_prompt" value="{{prev_prompt}}">
+    <input type="text" id="prev_prompt" name="prev_prompt" value="{{final_prompt}}">
     <input type="hidden" id="model" name="model" value="{{model}}">
     <input type="hidden" id="topic" name="topic" value="{{topic}}">
             {% for formatSel in formats %}
@@ -33,6 +33,7 @@
     <label class="form-check-label" for="format{{ formatSel.name }}">{{ formatSel.desc }}</label>
 </div>
 {% endfor %}
+       <p>You may also include some additional guidance to fine-tune your result.</p>
     <textarea name="additional_input" id="additional_input"></textarea>
     <input type="submit" value="Regenerate" />
   </form>
