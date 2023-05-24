@@ -23,7 +23,7 @@
 <div id="continueconversation">
   <p>Do you want to regenerate this text?  </p>
     <p>We can re-submit it with the same choices, select a different output format, or add additional guidance in the box below.</p>
-  <form action="{{ url_for('submit') }}" method="post">
+  <form action="{{ url_for('regenerate') }}" method="post">
     <input type="text" id="prev_response" name="prev_prompt" value="{{prev_prompt}}">
     <input type="text" id="model" name="model" value="{{model}}">
     <input type="text" id="topic" name="topic" value="{{topic}}">

@@ -379,9 +379,9 @@ def start():
 
     return render_template("start.html", org_name=current_user.org_name, user_class=current_user.user_class, formats=format_data)
 
-@app.route("/continue_conversation", methods=["POST"])
+@app.route("/regenerate", methods=["POST"])
 @login_required
-def continue_conversation():
+def regemerate():
     additional_input = request.form["additional_input"]
     previous_chat_request = request.form["chat_request"]
     topic = request.form["topic"]
@@ -440,7 +440,7 @@ def response():
         session['chat_request_id'] = new_chat_request_id
 
         # Render the template once the task is successful
-        return render_template("result.html", response=chatgpt_response, format=format)
+        return render_template("result.html", response=chatgpt_response, format=format, model=model, topic=topic, prev_promot=final_prompt)
 
 
 @app.route("/reloadresponse/<int:chat_request_id>")
