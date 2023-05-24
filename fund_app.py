@@ -459,7 +459,7 @@ def reloadresponse(chat_request_id):
     if chat_request:
         user_id = chat_request.id
         prompt = chat_request.prompt
-        model = chat_request.model
+        model = chat_request.engine
         chatgpt_response = chat_request.chatgpt_response
         topic = chat_request.topic
         format_ = chat_request.format  # Renamed the variable to format_ to avoid conflict with Python's built-in function

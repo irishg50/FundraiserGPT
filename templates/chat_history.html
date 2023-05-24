@@ -16,7 +16,7 @@
           <tr>
             <td>{{ chat_request.user.username }}</td>
             <td>{{ chat_request.timestamp.strftime('%Y-%m-%d %H:%M') }}</td>
-            <td><a href="{{ url_for('reload_response', chat_request_id=chat_request.id) }}">{{ chat_request.topic }}</a></td>
+            <td><a href="{{ url_for('reloadresponse', chat_request_id=chat_request.id) }}">{{ chat_request.topic }}</a></td>
           </tr>
         {% endfor %}
       </tbody>
