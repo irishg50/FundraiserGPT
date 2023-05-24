@@ -30,7 +30,7 @@
             {% for formatSel in formats %}
 <div class="form-check">
     <input class="form-check-input" type="radio" name="formatSel" id="format{{ formatSel.name }}" value="{{ formatSel.name }}"{% if formatSel.name == format %} checked{% endif %}>
-    <label class="form-check-label" for="formatSel{{ formatSel.name }}">{{ formatSel.desc }}</label>
+    <label class="form-check-label" for="format{{ formatSel.name }}">{{ formatSel.desc }}</label>
 </div>
 {% endfor %}
     <textarea name="additional_input" id="additional_input"></textarea>
