@@ -304,15 +304,10 @@ def start():
             impact = sanitize_input(impact)
             format = sanitize_input(format)
 
-
-            print(f"current_user_mission: {current_user.fund_mission}")
-
-            # retrieve fund_mission
-            current_user_id = session.get('user_id')
-            print(current_user_id)
+            current_user_id = current_user.id
             user = User.query.filter_by(id=current_user_id).first()
-            # Access the value from the 'fund_mission' column
-            fund_mission_value = user.fund_mission
+            if user is not None:
+                fund_mission_value = user.fund_mission
 
 
             # Concatenate the fields to create the final prompt
