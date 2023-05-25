@@ -304,7 +304,8 @@ def start():
             impact = sanitize_input(impact)
             format = sanitize_input(format)
 
-            print("current_user_class :" + current_user.user_class)
+
+            print(f"current_user_mission: {current_user.fund_mission}")
 
             # retrieve fund_mission
             current_user_id = session.get('user_id')
