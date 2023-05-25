@@ -305,8 +305,8 @@ def start():
             format = sanitize_input(format)
 
             # retrieve fund_mission
-            current_user_id = session.get('user_id')  
-            user = session.query(User).filter(User.id == current_user_id).first()
+            current_user_id = session.get('user_id')
+            user = User.query.filter_by(id=current_user_id).first()
             # Access the value from the 'fund_mission' column
             fund_mission_value = user.fund_mission
 
