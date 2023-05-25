@@ -29,8 +29,8 @@
     <div class="mb-3">
   <p class="mb-0"><i>Fundraising Mission:</i></p>
   <div class="input-wrapper">
-    <textarea id="fund_mission" name="fund_mission" value="{{ user.fund_mission }}" class="form-control" maxlength="250" rows="3"></textarea>
-    <span class="char-counter" id="fund_mission-counter"> / 250</span>
+    <textarea id="fund_mission" name="fund_mission" class="form-control" maxlength="500" rows="3">{{ user.fund_mission }}</textarea>
+    <span class="char-counter" id="fund_mission-counter"> / 500</span>
   </div>
 </div>
 
@@ -44,7 +44,7 @@
    document.getElementById('org_name-counter').innerText = this.value.length + ' / 50';
 });
     document.getElementById('fund_mission').addEventListener('input', function () {
-    document.getElementById('fund_mission-counter').innerText = this.value.length + ' / 250';
+    document.getElementById('fund_mission-counter').innerText = this.value.length + ' / 500';
 });
       </script>
 
