@@ -329,16 +329,9 @@ def start():
             if notes :
                 final_prompt += ". Also the consider the following points when crafting the message: " + notes
 
-            print(final_prompt)
-            prompt_entry = prompt_history(user_id=current_user_id, prompt=full_prompt)
-            db.session.add(prompt_entry)
-            db.session.commit()
-
             #Add format instructions
             format_row = Formats.query.filter_by(name=format).first()
-
             final_output = ""
-
             if format_row is not None:
                  output = format_row.desc
                  guideline = format_row.guideline
@@ -352,6 +345,9 @@ def start():
             full_prompt = final_prompt + " " + final_output
 
             print(f"Full prompt: {full_prompt}")
+            prompt_entry = prompt_history(user_id=current_user_id, prompt=full_prompt)
+            db.session.add(prompt_entry)
+            db.session.commit()
 
             try:
                 task = send_request_to_chatgpt_task.apply_async(args=[full_prompt, model])
