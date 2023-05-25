@@ -134,7 +134,7 @@ class Formats(db.Model):
     desc = db.Column(db.String(100), nullable=False) 
     guideline =db.Column(db.String(500), nullable=False)
 
-class PromptHistory(db.Model):
+class prompt_history(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer)
     full_prompt = db.Column(db.Text)
