@@ -341,7 +341,8 @@ def start():
             model = request.form["model"]
 
             full_prompt = final_prompt + " " + final_output
-            print(full_prompt)
+
+            print(f"Full prompt: {full_prompt}")
 
             try:
                 task = send_request_to_chatgpt_task.apply_async(args=[full_prompt, model])
