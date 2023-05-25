@@ -345,7 +345,7 @@ def start():
             full_prompt = final_prompt + " " + final_output
 
             print(f"Full prompt: {full_prompt}")
-            prompt_entry = prompt_history(user_id=current_user_id, full_prompt=full_prompt)
+            prompt_entry = prompt_history(user_id=current_user_id, full_prompt=full_prompt, timestamp=datetime.datetime.utcnow())
             db.session.add(prompt_entry)
             db.session.commit()
 
