@@ -287,6 +287,26 @@ def logout():
     logout_user()
     return redirect(url_for("login"))
 
+@app.route('/update_user', methods=['GET', 'POST'])
+@login_required
+def update_user():
+    user = User.query.get(current_user.id)
+
+    if request.method == 'POST':
+        org_name = request.form['org_name']
+        fund_mission = request.form['fund_mission']
+
+        # Update the user's org_name and fund_mission fields
+        user.org_name = org_name
+        user.fund_mission = fund_mission
+        db.session.commit()
+
+        flash('User data updated successfully!')
+        return redirect('/update_user')
+
+    return render_template('update_user.html', user=user)
+
+
 @app.route("/start", methods=["GET", "POST"])
 @login_required
 def start():
