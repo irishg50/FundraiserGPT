@@ -134,7 +134,11 @@ class Formats(db.Model):
     desc = db.Column(db.String(100), nullable=False) 
     guideline =db.Column(db.String(500), nullable=False)
 
-
+class PromptHistory(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer)
+    full_prompt = db.Column(db.Text)
+    timestamp = db.Column(db.DateTime)
 
 def sanitize_input(text):
     return text.strip().replace("'", "")
@@ -326,6 +330,9 @@ def start():
                 final_prompt += ". Also the consider the following points when crafting the message: " + notes
 
             print(final_prompt)
+            prompt_entry = PromptHistory(user_id=current_user_id, prompt=full_prompt)
+            db.session.add(prompt_entry)
+            db.session.commit()
 
             #Add format instructions
             format_row = Formats.query.filter_by(name=format).first()
