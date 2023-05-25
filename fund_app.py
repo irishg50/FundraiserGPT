@@ -304,8 +304,16 @@ def start():
             impact = sanitize_input(impact)
             format = sanitize_input(format)
 
+            # retrieve fund_mission
+            current_user_id = current.user_id  # Assuming you have the user ID available
+            user = session.query(User).filter(User.id == current_user_id).first()
+            # Access the value from the 'fund_mission' column
+            fund_mission_value = user.fund_mission
+
+
             # Concatenate the fields to create the final prompt
-            final_prompt = "You are a helpful fundraising copy writer, helping to prepare fundraising content for " + org_name + "."
+            final_prompt = "You are a helpful fundraising copy writer, helping to prepare fundraising content for " + org_name + ". "
+            final_prompt += "The fundraising mission of" + org_name + " is " + fund_mission_value + ". "
             final_prompt += " The message should have an overall tone of " + "earnest and urgent" 
             if audience :
                 final_prompt += ", and be targeted to " + audience
@@ -317,6 +325,7 @@ def start():
             if notes :
                 final_prompt += ". Also the consider the following points when crafting the message: " + notes
 
+            #Add format instructions
             format_row = Formats.query.filter_by(name=format).first()
 
             final_output = ""
@@ -332,6 +341,7 @@ def start():
             model = request.form["model"]
 
             full_prompt = final_prompt + " " + final_output
+            print(full_prompt)
 
             try:
                 task = send_request_to_chatgpt_task.apply_async(args=[full_prompt, model])
