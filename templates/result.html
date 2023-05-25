@@ -2,14 +2,7 @@
 
 {% block content %}
 
-
-    <style>
-#resultDiv {
-  white-space: pre-wrap; /* Word wrap for pre-formatted text */
-}
-</style>
-
-
+<div class="container">
 <div id="resultBody"  style="display:block">
 <h4>Done! Here is your result.</h4>
     <pre>
@@ -20,8 +13,10 @@
   <a href="{{ url_for('start') }}">Back</a>
    </div>
 </div>
+</div>
+<div class="container">
 <div id="continueconversation">
-  <h4>Do you want to regenerate this text?  </h4>
+  <h4>Regenerate this result?  </h4>
     <p><b>Use the form below to generate a new result using the same input fields.</b></p>
     <p><i>Optional: Select a different output format.</i></p>
    <form action="{{ url_for('regenerate') }}" method="post">
@@ -36,8 +31,9 @@
 {% endfor %}
        <p><i>You may also include additional guidance to fine-tune your result.</i></p>
     <textarea name="additional_input" id="additional_input"></textarea>
-    <input type="submit" value="Regenerate" />
+    <input type="submit" value="Regenerate" class="btn btn-primary" />
   </form>
+</div>
 </div>
 <script>
 function copyToClipboard() {

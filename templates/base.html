@@ -19,12 +19,19 @@
       background-repeat: no-repeat;
       background-size: cover;
     }
+    .frameContainer {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #d8e8f5;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
 
     .container {
       max-width: 800px;
       margin: 0 auto;
       padding: 20px;
-      background-color: #f8f9fa;
+      background-color: #dcecfa;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     }
 
@@ -57,16 +64,34 @@
       height: 1.5rem;
       border-width: 0.2em;
     }
+
+    #resultDiv {
+  white-space: pre-wrap; /* Word wrap for pre-formatted text */
+   background-color: #f9f9f9;
+  }
+
+    .table table-striped {
+    background-color: ffffff;
+    }
   </style>
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-J7MLEE0NNT"></script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-L1W681DCZS"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
 
-  gtag('config', 'G-J7MLEE0NNT');
+  gtag('config', 'G-L1W681DCZS');
 </script>
+    <style>
+    body {
+      background: url("{{ url_for('static', filename='white-tech-bg copy.png') }}") no-repeat center center fixed;
+      -webkit-background-size: cover;
+      -moz-background-size: cover;
+      -o-background-size: cover;
+      background-size: cover;
+    }
+  </style>
 </head>
 <body>
 
@@ -122,7 +147,7 @@
 
 
 
-  <div class="container mt-4">
+  <div class="frameContainer mt-4">
     {% block content %}
     {% endblock %}
   </div>

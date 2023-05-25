@@ -324,7 +324,7 @@ def start():
                 final_prompt += ". Donations will support the organisation's important work to " + impact 
             if notes :
                 final_prompt += ". Also the consider the following points when crafting the message: " + notes
-                
+
             print(final_prompt)
 
             #Add format instructions
