@@ -309,7 +309,7 @@ def start():
             user = User.query.filter_by(id=current_user_id).first()
             if user is not None:
                 fund_mission_value = user.fund_mission
-                print(fund_mission_value)
+
 
             # Concatenate the fields to create the final prompt
             final_prompt = "You are a helpful fundraising copy writer, helping to prepare fundraising content for " + org_name + ". "
@@ -324,6 +324,8 @@ def start():
                 final_prompt += ". Donations will support the organisation's important work to " + impact 
             if notes :
                 final_prompt += ". Also the consider the following points when crafting the message: " + notes
+                
+            print(final_prompt)
 
             #Add format instructions
             format_row = Formats.query.filter_by(name=format).first()
