@@ -330,7 +330,7 @@ def start():
                 final_prompt += ". Also the consider the following points when crafting the message: " + notes
 
             print(final_prompt)
-            prompt_entry = PromptHistory(user_id=current_user_id, prompt=full_prompt)
+            prompt_entry = prompt_history(user_id=current_user_id, prompt=full_prompt)
             db.session.add(prompt_entry)
             db.session.commit()
 
