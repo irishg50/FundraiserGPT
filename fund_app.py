@@ -305,10 +305,11 @@ def start():
             format = sanitize_input(format)
 
             current_user_id = current_user.id
+            print(current_user_id)
             user = User.query.filter_by(id=current_user_id).first()
             if user is not None:
                 fund_mission_value = user.fund_mission
-
+                print(fund_mission_value)
 
             # Concatenate the fields to create the final prompt
             final_prompt = "You are a helpful fundraising copy writer, helping to prepare fundraising content for " + org_name + ". "
