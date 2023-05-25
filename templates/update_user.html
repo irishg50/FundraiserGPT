@@ -23,14 +23,14 @@
         <p class="mb-0"><i>Organization Name:</i></p>
         <div class="input-wrapper">
             <input type="text" id="org_name" name="org_name" class="form-control" value="{{ user.org_name }}" maxlength="50"require>
-            <span class="char-counter" id="orgname-counter">0 / 250</span>
+            <span class="char-counter" id="orgname-counter"> / 50</span>
         </div>
     </div>
     <div class="mb-3">
   <p class="mb-0"><i>Fundraising Mission:</i></p>
   <div class="input-wrapper">
-    <textarea id="fund_mission" name="fund_mission" required>{{ user.fund_mission }} class="form-control" maxlength="250" rows="2"></textarea>
-    <span class="char-counter" id="fund_mission-counter">0 / 250</span>
+    <textarea id="fund_mission" name="fund_mission" required value="{{ user.fund_mission }} class="form-control" maxlength="250" rows="2"></textarea>
+    <span class="char-counter" id="fund_mission-counter"> / 250</span>
   </div>
 </div>
 
