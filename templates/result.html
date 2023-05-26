@@ -21,9 +21,9 @@
     <p><b>Use the form below to generate a new result using the same input fields.</b></p>
     <p><i>Optional: Select a different output format.</i></p>
    <form action="{{ url_for('regenerate') }}" method="post">
-    <input type="text" id="prev_prompt" name="prev_prompt" value="{{final_prompt}}">
-    <input type="text" id="model" name="model" value="{{model}}">
-    <input type="text" id="topic" name="topic" value="{{topic}}">
+    <input type="hidden" id="prev_prompt" name="prev_prompt" value="{{final_prompt}}">
+    <input type="hidden" id="model" name="model" value="{{model}}">
+    <input type="hidden" id="topic" name="topic" value="{{topic}}">
             {% for formatSel in formats %}
 <div class="form-check">
     <input class="form-check-input" type="radio" name="formatSel" id="format{{ formatSel.name }}" value="{{ formatSel.name }}"{% if formatSel.name == format %} checked{% endif %}>
