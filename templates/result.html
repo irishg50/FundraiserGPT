@@ -31,7 +31,8 @@
 </div>
 {% endfor %}
        <p><i>You may also include additional guidance to fine-tune your result.</i></p>
-    <textarea name="additional_input" id="additional_input"></textarea>
+    <textarea name="additional_input" id="additional_input" class="form-control" maxlength="500" rows="3"></textarea>
+            <span class="char-counter" id="additional_input-counter">0 / 500</span>
     <input type="submit" value="Regenerate" class="btn btn-primary" />
   </form>
 </div>
@@ -48,7 +49,12 @@ function copyToClipboard() {
   alert("Text copied to clipboard!");
 }
 </script>
+<script>
 
+document.getElementById('additional_input').addEventListener('input', function () {
+    document.getElementById('additional_input-counter').innerText = this.value.length + ' / 500';
+});
 
+</script>
 {% endblock %}
 
