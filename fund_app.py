@@ -310,7 +310,6 @@ def update_user():
 @app.route("/start", methods=["GET", "POST"])
 @login_required
 def start():
-    gtag('config', 'G-L1W681DCZS', {'page_path': '/start'})
     if request.method == "POST":
         try:
             org_name = request.form["org_name"]
