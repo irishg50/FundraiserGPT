@@ -34,13 +34,25 @@
        <div class="input-wrapper">
     <textarea name="additional_input" id="additional_input" class="form-control" maxlength="500" rows="3"></textarea>
             <span class="char-counter" id="additional_input-counter">0 / 500</span>
-       </div>   
+       </div>
     <input type="submit" value="Regenerate" class="btn btn-primary" />
   </form>
 </div>
 </div>
 
 <style>
+.input-wrapper {
+  position: relative;
+  display: block; /* Changed from inline-block to block */
+}
+
+.input-wrapper input,
+.input-wrapper textarea {
+  width: 100%; /* Added this line */
+  box-sizing: border-box; /* Added this line to include padding and border in element's total width */
+  padding-right: 50px; /* Adjust as needed */
+}
+
 .char-counter {
   position: absolute;
   bottom: 5px; /* Adjust as needed */
