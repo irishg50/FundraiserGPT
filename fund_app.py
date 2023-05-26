@@ -310,6 +310,7 @@ def update_user():
 @app.route("/start", methods=["GET", "POST"])
 @login_required
 def start():
+    gtag('config', 'G-L1W681DCZS', {'page_path': '/start'})
     if request.method == "POST":
         try:
             org_name = request.form["org_name"]
@@ -343,7 +344,7 @@ def start():
                 final_prompt += ", and be targeted to " + audience
             final_prompt += ". The topic of the message should be " + topic 
             if urgency :
-                final_prompt += " with an urgency because of " + urgency
+                final_prompt += " with urgency because of " + urgency
             if impact :
                 final_prompt += ". Donations will support the organisation's important work to " + impact 
             if notes :
