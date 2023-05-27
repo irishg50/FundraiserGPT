@@ -30,11 +30,13 @@
         <div class="mb-3">
           <label for="org_name" class="form-label">Organization Name:</label>
           <input type="text" id="org_name" name="org_name" class="form-control" required>
+            <span class="char-counter" id="org_name-counter"> / 50</span>
         </div>
         <div class="mb-3">
           <label for="fund_mission" class="form-label">Fund Mission:</label>
           <p class="mb-0">Write a short summary of your organization's case for giving (500 char max)</p>
           <textarea id="fund_mission" name="fund_mission" maxlength="500" rows="3" class="form-control"></textarea>
+               <span class="char-counter" id="fund_mission-counter"> / 500</span>
        </div>      
        <div>
           <button type="submit" class="btn btn-primary">Register</button>
