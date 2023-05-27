@@ -33,7 +33,7 @@
         </div>
         <div class="mb-3">
           <label for="fund_mission" class="form-label">Fund Mission:</label>
-          <p class="mb-0">Write a short ) summary of your organization's top level case for giving (500 char max)</p>
+          <p class="mb-0">Write a short summary of your organization's case for giving (500 char max)</p>
           <textarea id="fund_mission" name="fund_mission" maxlength="500" rows="3" class="form-control"></textarea>
        </div>      
        <div>
@@ -43,4 +43,37 @@
     </div>
   </div>
 </div>
+
+
+    <style>
+.input-wrapper {
+  position: relative;
+  display: block; /* Changed from inline-block to block */
+}
+
+.input-wrapper input,
+.input-wrapper textarea {
+  width: 100%; /* Added this line */
+  box-sizing: border-box; /* Added this line to include padding and border in element's total width */
+  padding-right: 50px; /* Adjust as needed */
+}
+
+.char-counter {
+  position: absolute;
+  bottom: 5px; /* Adjust as needed */
+  right: 10px; /* Adjust as needed */
+  font-size: 0.8em;
+  color: #888;
+}
+</style>
+
+      <script>
+   document.getElementById('org_name').addEventListener('input', function () {
+   document.getElementById('org_name-counter').innerText = this.value.length + ' / 50';
+});
+    document.getElementById('fund_mission').addEventListener('input', function () {
+    document.getElementById('fund_mission-counter').innerText = this.value.length + ' / 500';
+});
+      </script>
+
 {% endblock %}

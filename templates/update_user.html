@@ -38,6 +38,27 @@
         <input type="submit" value="Update Profile"  class="btn btn-primary">
     </form>
 
+  <style>
+.input-wrapper {
+  position: relative;
+  display: block; /* Changed from inline-block to block */
+}
+
+.input-wrapper input,
+.input-wrapper textarea {
+  width: 100%; /* Added this line */
+  box-sizing: border-box; /* Added this line to include padding and border in element's total width */
+  padding-right: 50px; /* Adjust as needed */
+}
+
+.char-counter {
+  position: absolute;
+  bottom: 5px; /* Adjust as needed */
+  right: 10px; /* Adjust as needed */
+  font-size: 0.8em;
+  color: #888;
+}
+</style>
 
       <script>
    document.getElementById('org_name').addEventListener('input', function () {
