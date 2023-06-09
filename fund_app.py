@@ -51,8 +51,8 @@ def make_celery(app):
 
 app = Flask(__name__)
 app.config.update(
-    broker_url='rediss://:p952ada0b5ae194c7c49dd484e19814e03c9a324296ecfcfe8ff1ae4aca4ebc2e@ec2-3-234-14-83.compute-1.amazonaws.com:14850?ssl_cert_reqs=CERT_NONE',
-    result_backend='rediss://:p952ada0b5ae194c7c49dd484e19814e03c9a324296ecfcfe8ff1ae4aca4ebc2e@ec2-3-234-14-83.compute-1.amazonaws.com:14850?ssl_cert_reqs=CERT_NONE'
+    broker_url='rediss://:p952ada0b5ae194c7c49dd484e19814e03c9a324296ecfcfe8ff1ae4aca4ebc2e@ec2-44-212-147-178.compute-1.amazonaws.com:19219?ssl_cert_reqs=CERT_NONE',
+    result_backend='rediss://:p952ada0b5ae194c7c49dd484e19814e03c9a324296ecfcfe8ff1ae4aca4ebc2e@ec2-44-212-147-178.compute-1.amazonaws.com:19219?ssl_cert_reqs=CERT_NONE'
 )
 
 celery = make_celery(app)
