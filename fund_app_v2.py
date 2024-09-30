@@ -27,7 +27,6 @@ app = Flask(__name__)
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY")
 
 DATABASE_URL = os.environ.get('DATABASE_URL')
-#DATABASE_URL = "postgresql://postgres:POST50pat!@localhost:5432/fund_app_db"
 
 if DATABASE_URL is None:
     raise ValueError("DATABASE_URL environment variable is not set")
