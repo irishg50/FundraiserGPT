@@ -50,16 +50,13 @@ def make_celery(app):
 
 
 app = Flask(__name__)
-app.config.update(
-    broker_url='rediss://:p952ada0b5ae194c7c49dd484e19814e03c9a324296ecfcfe8ff1ae4aca4ebc2e@ec2-44-212-147-178.compute-1.amazonaws.com:19220?ssl_cert_reqs=CERT_NONE',
-    result_backend='rediss://:p952ada0b5ae194c7c49dd484e19814e03c9a324296ecfcfe8ff1ae4aca4ebc2e@ec2-44-212-147-178.compute-1.amazonaws.com:19220?ssl_cert_reqs=CERT_NONE'
-)
+
 
 celery = make_celery(app)
 
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY")
 DATABASE_URL = os.environ.get('DATABASE_URL')
-#DATABASE_URL = "postgresql://irish:POST50pat!@localhost:5432/fund_app_db"
+
 
 if DATABASE_URL is None:
     raise ValueError("DATABASE_URL environment variable is not set")
